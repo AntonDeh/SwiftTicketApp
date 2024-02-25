@@ -8,7 +8,7 @@
         public DateTime CreatedAt { get; set; } // The date and time the ticket was created
         public DateTime? ClosedAt { get; set; } // The date and time the ticket was closed, nullable if still open
         public string Status { get; set; } = string.Empty; // The current status of the ticket (e.g., "Open", "In Progress", "Closed")
-        public int UserId { get; set; } // Reference to the user who created the ticket
+        public string UserId { get; set; } // Reference to the user who created the ticket
 
         // Navigation properties
         public User User { get; set; } // The user who created the ticket
