@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SwiftTicketApp.Models; // Ensure you import the namespace where your models are defined
+using SwiftTicketApp.Models; 
 
 namespace SwiftTicketApp.Data
 {
@@ -45,7 +46,49 @@ namespace SwiftTicketApp.Data
                 .WithOne(s => s.User) // Specifies that a ServiceHistory record is associated with one User
                 .HasForeignKey(s => s.UserId); // Defines the foreign key in the ServiceHistory entity pointing to User
 
-            // Similar configuration can be added for other models if required
+
+            // Initialize an admin role and user at startup
+            InitializeAdminUser(modelBuilder);
+
+        }
+        // Method to initialize an admin user and role
+        private static void InitializeAdminUser(ModelBuilder modelBuilder)
+        {
+            // Admin role
+            var adminRole = new IdentityRole
+            {
+                Id = "admin-role-id", // Use a GUID or predefined ID
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            };
+
+            // Admin user
+            var hasher = new PasswordHasher<IdentityUser>();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var adminUser = new IdentityUser
+            {
+                Id = "admin-user-id", // Use a GUID or predefined ID
+                UserName = "admin@admin.com",
+                NormalizedUserName = "ADMIN@ADMIN.COM",
+                Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "1@Password"), // Use a secure password
+                SecurityStamp = string.Empty
+            };
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            // Assign admin user to admin role
+            var adminUserRole = new IdentityUserRole<string>
+            {
+                RoleId = adminRole.Id,
+                UserId = adminUser.Id
+            };
+
+            // Seed admin role and user
+            modelBuilder.Entity<IdentityRole>().HasData(adminRole);
+            modelBuilder.Entity<IdentityUser>().HasData(adminUser);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(adminUserRole);
         }
     }
 }

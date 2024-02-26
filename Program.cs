@@ -13,6 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Adding Identity services to the application
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()   // Adds role support
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
