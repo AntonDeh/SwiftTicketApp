@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels;
 
 namespace SwiftTicketApp.Controllers
