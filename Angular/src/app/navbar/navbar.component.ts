@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -28,11 +29,10 @@ export class NavbarComponent implements OnInit {
       next: response => {
         console.log('Login successful', response);
         this.loggedIn = true;
-
       },
       error: (error) => {
         console.error('Login error', error);
       }
-      })
+    })
   }
 }

@@ -2,20 +2,38 @@
 using Microsoft.AspNetCore.Mvc;
 using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels;
-using System;
+using System.Threading.Tasks;
 
 
 namespace SwiftTicketApp.Controllers
 {
-    public class AccountController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        // POST: api/Account/Login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    // Return a simple JSON object if login is successful
+                    return Ok(new { message = "Login successful" });
+                }
+                else
+                {
+                    // Return an error if login is unsuccessful
+                    return BadRequest(new { message = "Invalid login attempt" });
+                }
+            }
+            // In case of model validation errors
+            return BadRequest(ModelState);
         }
 
         // GET: /Account/Login

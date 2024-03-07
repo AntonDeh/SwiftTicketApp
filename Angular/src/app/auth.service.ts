@@ -17,12 +17,10 @@ export class AuthService {
     return this.http.post(this.loginUrl, model, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }).pipe(
-      catchError(error => {
-        console.error('Login error', error);
-        return throwError(() => error);
-      })
-    );
+        catchError(error => {
+          console.error('Login error', error);
+          return throwError(() => error);
+        })
+      );
   }
-
-
 }

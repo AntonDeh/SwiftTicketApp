@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -31,7 +31,7 @@ import { AuthService } from './auth.service';
     FormsModule,
     BrowserModule,
     RouterModule.forRoot(routes),
-    
+    ReactiveFormsModule,
     // Import other required modules
   ],
   providers: [AuthService],

@@ -12,20 +12,4 @@ export class LoginComponent {
     password: '',
     rememberMe: false
   };
-
-
-
-  constructor(private authService: AuthService) { }
-
-/*  testLogin() {
-    this.authService.login({ username: 'test', password: 'password' }).subscribe({
-      next: (result) => {
-        console.log('Login success', result);
-      },
-      error: (error) => {
-        console.error('Login failed', error);
-      }
-    });
-  }
-  */
 }
