@@ -1,8 +1,22 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model SwiftTicketApp.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Swift Ticket";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Swift Ticket</h2>
+@if (Model.IsUserAuthenticated)
+{
+    <div>
+        <h3>Service Catalog</h3>
+        <ul>
+            <li><a href="@Url.Action("CreateRequest", "Ticket")">Service Request - Click here to submit a service request.</a></li>
+            <li><a href="@Url.Action("FindTicket", "Ticket")">Ticket Finder - Searching for a specific ticket? Click here to find it.</a></li>
+        </ul>
+    </div>
+}
+else
+{
+    <p>Please <a href="@Url.Action("Login", "Account")">log in</a> to access the service catalog.</p>
+}
+

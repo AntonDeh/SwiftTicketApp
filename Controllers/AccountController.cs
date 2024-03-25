@@ -35,9 +35,22 @@ namespace SwiftTicketApp.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                
                 if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+                    var user = await _userManager.FindByEmailAsync(model.Email) ?? throw new Exception("cannot find user");
+                    // Is "Technician"?
+                    var isInTechnicianRole = await _userManager.IsInRoleAsync(user, "Technician");
+                    if (isInTechnicianRole)
+                    {
+                        // If the user belongs to the Technician role, we redirect him to the "Service Catalog" page
+                        return RedirectToAction("ServiceCatalog", "Home");
+                    }
+                    else
+                    {
+                        // 
+                        return RedirectToLocal(returnUrl);
+                    }
                 }
                 else
                 {
@@ -84,7 +97,7 @@ namespace SwiftTicketApp.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), "HomeHome");
             }
         }
 
