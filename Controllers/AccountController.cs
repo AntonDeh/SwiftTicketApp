@@ -97,7 +97,7 @@ namespace SwiftTicketApp.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "HomeHome");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
 
