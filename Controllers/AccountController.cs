@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SwiftTicketApp.Models;
-using SwiftTicketApp.ViewModels;
+using SwiftTicketApp.ViewModels.Account;
 using System;
 
 

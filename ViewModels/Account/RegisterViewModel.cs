@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SwiftTicketApp.ViewModels
+namespace SwiftTicketApp.ViewModels.Account
 {
     public class RegisterViewModel
     {

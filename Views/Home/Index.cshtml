@@ -1,5 +1,4 @@
-﻿@model SwiftTicketApp.ViewModels.HomeViewModel
-
+﻿@model HomeViewModel
 @{
     ViewData["Title"] = "Swift Ticket";
 }
@@ -12,6 +11,10 @@
         <ul>
             <li><a href="@Url.Action("CreateRequest", "Ticket")">Service Request - Click here to submit a service request.</a></li>
             <li><a href="@Url.Action("FindTicket", "Ticket")">Ticket Finder - Searching for a specific ticket? Click here to find it.</a></li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li><a href="/Role/Index">Role Management - Click here to manage roles.</a></li>
+            }
         </ul>
     </div>
 }

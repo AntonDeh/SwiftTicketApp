@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SwiftTicketApp.Models;
-using SwiftTicketApp.ViewModels;
+using SwiftTicketApp.ViewModels.Home;
 
 namespace SwiftTicketApp.Controllers;
 

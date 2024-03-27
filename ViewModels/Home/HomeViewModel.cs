@@ -1,4 +1,4 @@
-﻿namespace SwiftTicketApp.ViewModels
+﻿namespace SwiftTicketApp.ViewModels.Home
 {
     public class HomeViewModel
     {

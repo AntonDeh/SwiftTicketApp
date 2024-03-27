@@ -1,4 +1,4 @@
-﻿namespace SwiftTicketApp.ViewModels
+﻿namespace SwiftTicketApp.ViewModels.Roles
 {
     public class EditRoleViewModel
     {
