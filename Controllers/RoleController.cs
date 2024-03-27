@@ -7,24 +7,17 @@ using SwiftTicketApp.ViewModels;
 namespace SwiftTicketApp.Controllers
 {
     [Authorize(Roles = "Admin")]    // Access to role management is only for administrators
-    public class RoleController : Controller
+    public class RoleController(RoleManager<IdentityRole> roleManager) : Controller
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public RoleController(RoleManager<IdentityRole> roleManager)
-        {
-            _roleManager = roleManager;
-        }
-
         public IActionResult Index()
         {
-            var roles = _roleManager.Roles.ToList();
+            var roles = roleManager.Roles.ToList();
             return View(roles);
         }
 
         public IActionResult Create()
         {
-            return View(new RoleViewModel());
+            return View(model: new RoleViewModel { RoleName = "" });
         }
 
         [HttpPost]
@@ -32,7 +25,7 @@ namespace SwiftTicketApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
+                IdentityResult result = await roleManager.CreateAsync(new IdentityRole(model.RoleName));
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -49,7 +42,7 @@ namespace SwiftTicketApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var role = await _roleManager.FindByIdAsync(id);
+            var role = await roleManager.FindByIdAsync(id);
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
@@ -63,7 +56,7 @@ namespace SwiftTicketApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditRoleViewModel model)
         {
-            var role = await _roleManager.FindByIdAsync(model.Id);
+            var role = await roleManager.FindByIdAsync(model.Id);
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
@@ -72,7 +65,7 @@ namespace SwiftTicketApp.Controllers
             else
             {
                 role.Name = model.RoleName;
-                var result = await _roleManager.UpdateAsync(role);
+                var result = await roleManager.UpdateAsync(role);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -86,5 +79,55 @@ namespace SwiftTicketApp.Controllers
                 return View(model);
             }
         }
+        // GET: /Role/Delete/
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var role = await roleManager.FindByIdAsync(id);
+
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+            if (role.Name == null)
+            {
+                throw new InvalidOperationException("Role name cannot be null");
+            }
+            var model = new RoleViewModel { Id = role.Id, RoleName = role.Name };
+            return View(model);
+        }
+
+        // POST: /Role/Delete/
+        [HttpPost, ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+
+            var result = await roleManager.DeleteAsync(role);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            // If we get to this point, something went wrong, show form again
+            return View("Delete", model: new RoleViewModel { Id = id, RoleName = role.Name = role.Name! });
+        }
+
     }
 }

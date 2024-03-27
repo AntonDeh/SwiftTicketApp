@@ -26,7 +26,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <!-- Add login/logout buttons -->
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User?.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">
                                 <form method="post" asp-controller="Account" asp-action="Logout" class="form-inline">
