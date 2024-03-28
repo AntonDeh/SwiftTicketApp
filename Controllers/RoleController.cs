@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.ViewModels.Roles;
 
@@ -143,19 +144,25 @@ namespace SwiftTicketApp.Controllers
         {
             var users = await userManager.Users.ToListAsync();
             var model = new List<UserRoleViewModel>();
+            var allRoles = roleManager.Roles.ToList();
 
             foreach (var user in users)
             {
                 var userRoles = await userManager.GetRolesAsync(user);
-                var currentRoleName = userRoles.FirstOrDefault() ?? "Not Assigned"; 
-
+                Console.WriteLine($"User: {user.UserName}, Roles: {string.Join(", ", userRoles)}");
+                var currentRoleName = userRoles.FirstOrDefault() ?? "Not Assigned";
 
                 var userRoleViewModel = new UserRoleViewModel
                 {
                     UserId = user.Id,
                     UserName = user.UserName ?? "Unknown",
                     CurrentRoleName = currentRoleName,
-
+                    AvailableRoles = allRoles.Select(r => new SelectListItem
+                    {
+                        Value = r.Id,
+                        Text = r.Name,
+                        Selected = userRoles.Any(ur => ur == r.Name)
+                    })
                 };
 
                 model.Add(userRoleViewModel);
@@ -163,51 +170,78 @@ namespace SwiftTicketApp.Controllers
 
             return View(model);
         }
-
-/*        // POST: /Role/ManageUserRoles
+        // POST: /Role/ManageUserRoles
         [HttpPost]
-        public async Task<IActionResult> UpdateUserRoles(List<UserRoleViewModel> model, string roleId)
+        public async Task<IActionResult> UpdateUserRoles(List<UserRoleViewModel> model)
         {
-            var role = await roleManager.FindByIdAsync(roleId);
-            if (role == null)
+            foreach (var userRoleViewModel in model)
             {
-                ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-                return View("NotFound");
-            }
+                var user = await userManager.FindByIdAsync(userRoleViewModel.UserId);
+                var currentRoles = await userManager.GetRolesAsync(user);
 
-            for (int i = 0; i < model.Count; i++)
-            {
-                var user = await userManager.FindByIdAsync(model[i].UserId);
+                // Check if a new role is selected
+                if (!string.IsNullOrEmpty(userRoleViewModel.CurrentRoleId))
+                {
+                    // Remove all current roles except the new role
+                    await userManager.RemoveFromRolesAsync(user, currentRoles.Except(new[] { userRoleViewModel.CurrentRoleName }));
 
-                
-                IdentityResult result ;
-                if (model[i].IsSelected && !await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    result = await userManager.AddToRoleAsync(user, role.Name);
-                }
-                else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    result = await userManager.RemoveFromRoleAsync(user, role.Name);
-                }
-                else
-                {
-                    continue; // Do not change anything if the role membership status has not changed
-                }
-
-                if (result != null && !result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
+                    // Add the new role
+                    var newRole = await roleManager.FindByIdAsync(userRoleViewModel.CurrentRoleId);
+                    if (newRole != null)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        await userManager.AddToRoleAsync(user, newRole.Name);
+                        userRoleViewModel.CurrentRoleName = newRole.Name;
                     }
-                    // Return to current view to show errors
-                    return View("ManageUserRoles", model);
                 }
             }
 
-            // After updating user roles, redirect to the roles page
-            return RedirectToAction("Edit", new { Id = roleId });
+            return RedirectToAction("ManageUserRoles");
         }
-*/
+
+        /*        // POST: /Role/ManageUserRoles
+                [HttpPost]
+                public async Task<IActionResult> UpdateUserRoles(List<UserRoleViewModel> model, string roleId)
+                {
+                    var role = await roleManager.FindByIdAsync(roleId);
+                    if (role == null)
+                    {
+                        ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
+                        return View("NotFound");
+                    }
+
+                    for (int i = 0; i < model.Count; i++)
+                    {
+                        var user = await userManager.FindByIdAsync(model[i].UserId);
+
+
+                        IdentityResult result ;
+                        if (model[i].IsSelected && !await userManager.IsInRoleAsync(user, role.Name))
+                        {
+                            result = await userManager.AddToRoleAsync(user, role.Name);
+                        }
+                        else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
+                        {
+                            result = await userManager.RemoveFromRoleAsync(user, role.Name);
+                        }
+                        else
+                        {
+                            continue; // Do not change anything if the role membership status has not changed
+                        }
+
+                        if (result != null && !result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            // Return to current view to show errors
+                            return View("ManageUserRoles", model);
+                        }
+                    }
+
+                    // After updating user roles, redirect to the roles page
+                    return RedirectToAction("Edit", new { Id = roleId });
+                }
+        */
     }
 }

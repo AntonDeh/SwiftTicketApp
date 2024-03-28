@@ -9,6 +9,7 @@
             <tr>
                 <th>User Name</th>
                 <th>Current Role</th>
+                <th>Update Role</th>
             </tr>
         </thead>
         <tbody>
@@ -22,14 +23,18 @@
                     <td>
                         @Html.DisplayFor(m => m[i].CurrentRoleName)
                     </td>
-
+                    <td>
+                        <select asp-for="@Model[i].CurrentRoleId" asp-items="@Model[i].AvailableRoles" class="form-control">
+                            <option value="">Select Role</option>
+                        </select>
+                    </td>
                     
                 </tr>
             }
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn btn-primary">Update Roles</button>
 </form>
 
 <a asp-action="Index">Back to Roles List</a>

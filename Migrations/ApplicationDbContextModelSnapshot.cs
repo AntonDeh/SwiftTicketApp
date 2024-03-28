@@ -51,7 +51,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "admin-role-id",
+                            Id = "59b1c2ad-51e6-4cba-ac55-b37f30c4d0c2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -158,15 +158,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "admin-user-id",
+                            Id = "0110e62d-e315-457e-8648-49dcad6df1c4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51534ead-8ad0-477e-80de-dbf1fe0e772c",
+                            ConcurrencyStamp = "266c892f-75d8-4470-ae32-f45ec078da68",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECoh0JjBbfmIqOGFUmdYpr2ymHcUDR+KcGxft6wMsk2y4vNBqFigU7BaUexI/gzGeA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFGSgMBJNfeAb1TtL/zKNEbiqZIKhYF6yNCOETLaV25kLFLXCHanijD58x4kLRvV+w==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -240,8 +240,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "admin-user-id",
-                            RoleId = "admin-role-id"
+                            UserId = "0110e62d-e315-457e-8648-49dcad6df1c4",
+                            RoleId = "59b1c2ad-51e6-4cba-ac55-b37f30c4d0c2"
                         });
                 });
 

@@ -54,10 +54,14 @@ namespace SwiftTicketApp.Data
         // Method to initialize an admin user and role
         private static void InitializeAdminUser(ModelBuilder modelBuilder)
         {
+            // Generating GUID for role and user
+            var adminRoleId = Guid.NewGuid().ToString();
+            var adminUserId = Guid.NewGuid().ToString();
+
             // Admin role
             var adminRole = new IdentityRole
             {
-                Id = "admin-role-id", // Use a GUID or predefined ID
+                Id = adminRoleId, // Use a GUID or predefined ID
                 Name = "Admin",
                 NormalizedName = "ADMIN"
             };
@@ -67,7 +71,7 @@ namespace SwiftTicketApp.Data
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var adminUser = new IdentityUser
             {
-                Id = "admin-user-id", // Use a GUID or predefined ID
+                Id = adminUserId, // Use a GUID or predefined ID
                 UserName = "admin@admin.com",
                 NormalizedUserName = "ADMIN@ADMIN.COM",
                 Email = "admin@admin.com",
@@ -81,8 +85,8 @@ namespace SwiftTicketApp.Data
             // Assign admin user to admin role
             var adminUserRole = new IdentityUserRole<string>
             {
-                RoleId = adminRole.Id,
-                UserId = adminUser.Id
+                RoleId = adminRoleId,
+                UserId = adminUserId
             };
 
             // Seed admin role and user

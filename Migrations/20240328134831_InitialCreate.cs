@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SwiftTicketApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigraition : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -240,17 +240,17 @@ namespace SwiftTicketApp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "admin-role-id", null, "Admin", "ADMIN" });
+                values: new object[] { "59b1c2ad-51e6-4cba-ac55-b37f30c4d0c2", null, "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "51534ead-8ad0-477e-80de-dbf1fe0e772c", "IdentityUser", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAECoh0JjBbfmIqOGFUmdYpr2ymHcUDR+KcGxft6wMsk2y4vNBqFigU7BaUexI/gzGeA==", null, false, "", false, "admin@admin.com" });
+                values: new object[] { "0110e62d-e315-457e-8648-49dcad6df1c4", 0, "266c892f-75d8-4470-ae32-f45ec078da68", "IdentityUser", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFGSgMBJNfeAb1TtL/zKNEbiqZIKhYF6yNCOETLaV25kLFLXCHanijD58x4kLRvV+w==", null, false, "", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "admin-role-id", "admin-user-id" });
+                values: new object[] { "59b1c2ad-51e6-4cba-ac55-b37f30c4d0c2", "0110e62d-e315-457e-8648-49dcad6df1c4" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
