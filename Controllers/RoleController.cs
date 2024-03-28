@@ -149,7 +149,6 @@ namespace SwiftTicketApp.Controllers
             foreach (var user in users)
             {
                 var userRoles = await userManager.GetRolesAsync(user);
-                Console.WriteLine($"User: {user.UserName}, Roles: {string.Join(", ", userRoles)}");
                 var currentRoleName = userRoles.FirstOrDefault() ?? "Not Assigned";
 
                 var userRoleViewModel = new UserRoleViewModel
@@ -177,71 +176,33 @@ namespace SwiftTicketApp.Controllers
             foreach (var userRoleViewModel in model)
             {
                 var user = await userManager.FindByIdAsync(userRoleViewModel.UserId);
-                var currentRoles = await userManager.GetRolesAsync(user);
 
-                // Check if a new role is selected
-                if (!string.IsNullOrEmpty(userRoleViewModel.CurrentRoleId))
+                if (user != null)
                 {
-                    // Remove all current roles except the new role
-                    await userManager.RemoveFromRolesAsync(user, currentRoles.Except(new[] { userRoleViewModel.CurrentRoleName }));
+                    var currentRoles = await userManager.GetRolesAsync(user);
 
-                    // Add the new role
-                    var newRole = await roleManager.FindByIdAsync(userRoleViewModel.CurrentRoleId);
-                    if (newRole != null)
+                    // Check if a new role is selected
+                    if (!string.IsNullOrEmpty(userRoleViewModel.CurrentRoleId))
                     {
-                        await userManager.AddToRoleAsync(user, newRole.Name);
-                        userRoleViewModel.CurrentRoleName = newRole.Name;
+                        // Remove all current roles except the new role
+                        await userManager.RemoveFromRolesAsync(user, currentRoles);
+
+                        // Add the new role if it exists
+                        var newRole = await roleManager.FindByIdAsync(userRoleViewModel.CurrentRoleId);
+                        if (newRole != null)
+                        {
+                            // Check for null before accessing the Name property
+                            if (!string.IsNullOrEmpty(newRole.Name))
+                            {
+                                await userManager.AddToRoleAsync(user, newRole.Name);
+                                userRoleViewModel.CurrentRoleName = newRole.Name;
+                            }
+                        }
                     }
                 }
             }
 
             return RedirectToAction("ManageUserRoles");
         }
-
-        /*        // POST: /Role/ManageUserRoles
-                [HttpPost]
-                public async Task<IActionResult> UpdateUserRoles(List<UserRoleViewModel> model, string roleId)
-                {
-                    var role = await roleManager.FindByIdAsync(roleId);
-                    if (role == null)
-                    {
-                        ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-                        return View("NotFound");
-                    }
-
-                    for (int i = 0; i < model.Count; i++)
-                    {
-                        var user = await userManager.FindByIdAsync(model[i].UserId);
-
-
-                        IdentityResult result ;
-                        if (model[i].IsSelected && !await userManager.IsInRoleAsync(user, role.Name))
-                        {
-                            result = await userManager.AddToRoleAsync(user, role.Name);
-                        }
-                        else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
-                        {
-                            result = await userManager.RemoveFromRoleAsync(user, role.Name);
-                        }
-                        else
-                        {
-                            continue; // Do not change anything if the role membership status has not changed
-                        }
-
-                        if (result != null && !result.Succeeded)
-                        {
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError("", error.Description);
-                            }
-                            // Return to current view to show errors
-                            return View("ManageUserRoles", model);
-                        }
-                    }
-
-                    // After updating user roles, redirect to the roles page
-                    return RedirectToAction("Edit", new { Id = roleId });
-                }
-        */
     }
 }
