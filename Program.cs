@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using SwiftTicketApp.Data;
+using SwiftTicketApp.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +17,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddRoles<IdentityRole>()   // Adds role support
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Add services to the container.
+// Register application services: controllers, data context, authentication services and custom services
 builder.Services.AddControllersWithViews();
+
+// Register HttpClient and MailgunEmailService
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<MailgunEmailService>();
+
+
 
 var app = builder.Build();
 

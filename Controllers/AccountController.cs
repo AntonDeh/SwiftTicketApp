@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SwiftTicketApp.Models;
+using SwiftTicketApp.Services;
 using SwiftTicketApp.ViewModels.Account;
-using System;
+
 
 
 namespace SwiftTicketApp.Controllers
@@ -11,11 +12,13 @@ namespace SwiftTicketApp.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly MailgunEmailService _emailService;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, MailgunEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         // GET: /Account/Login
@@ -78,8 +81,18 @@ namespace SwiftTicketApp.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    // Generating an Email Verification Token
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+
+                    // Sending an email
+                    await _emailService.SendEmailAsync(model.Email, "Confirm your email address",
+                         $"Please verify your account by going to the <a href='{callbackUrl}'>link</a>.");
+
+
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Login", "Account");
                 }
                 foreach (var error in result.Errors)
                 {
@@ -108,5 +121,32 @@ namespace SwiftTicketApp.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+        // GET: /Account/Register/ConfirmEmail
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                // Handle the error
+                return NotFound($"Unable to boot user from ID '{userId}'.");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Login), "Account");
+            }
+            else
+            {
+                // Confirmation error
+                return View("Error");
+            }
+        }
+
     }
 }
