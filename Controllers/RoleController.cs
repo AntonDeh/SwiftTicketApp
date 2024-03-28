@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.ViewModels.Roles;
 
 
 namespace SwiftTicketApp.Controllers
 {
     [Authorize(Roles = "Admin")]    // Access to role management is only for administrators
-    public class RoleController(RoleManager<IdentityRole> roleManager) : Controller
+    public class RoleController : Controller
     {
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly UserManager<IdentityUser> userManager;
+        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        {
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+        }
         public IActionResult Index()
         {
             var roles = roleManager.Roles.ToList();
@@ -52,7 +60,7 @@ namespace SwiftTicketApp.Controllers
             var model = new EditRoleViewModel { Id = role.Id, RoleName = role.Name };
             return View(model);
         }
-        // Handles submitting the role edit form
+        // POST: /Role/Edit/
         [HttpPost]
         public async Task<IActionResult> Edit(EditRoleViewModel model)
         {
@@ -129,5 +137,77 @@ namespace SwiftTicketApp.Controllers
             return View("Delete", model: new RoleViewModel { Id = id, RoleName = role.Name = role.Name! });
         }
 
+        //GET: /Role/ManageUserRoles
+        [HttpGet]
+        public async Task<IActionResult> ManageUserRoles()
+        {
+            var users = await userManager.Users.ToListAsync();
+            var model = new List<UserRoleViewModel>();
+
+            foreach (var user in users)
+            {
+                var userRoles = await userManager.GetRolesAsync(user);
+                var currentRoleName = userRoles.FirstOrDefault() ?? "Not Assigned"; 
+
+
+                var userRoleViewModel = new UserRoleViewModel
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName ?? "Unknown",
+                    CurrentRoleName = currentRoleName,
+
+                };
+
+                model.Add(userRoleViewModel);
+            }
+
+            return View(model);
+        }
+
+/*        // POST: /Role/ManageUserRoles
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRoles(List<UserRoleViewModel> model, string roleId)
+        {
+            var role = await roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
+                return View("NotFound");
+            }
+
+            for (int i = 0; i < model.Count; i++)
+            {
+                var user = await userManager.FindByIdAsync(model[i].UserId);
+
+                
+                IdentityResult result ;
+                if (model[i].IsSelected && !await userManager.IsInRoleAsync(user, role.Name))
+                {
+                    result = await userManager.AddToRoleAsync(user, role.Name);
+                }
+                else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
+                {
+                    result = await userManager.RemoveFromRoleAsync(user, role.Name);
+                }
+                else
+                {
+                    continue; // Do not change anything if the role membership status has not changed
+                }
+
+                if (result != null && !result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    // Return to current view to show errors
+                    return View("ManageUserRoles", model);
+                }
+            }
+
+            // After updating user roles, redirect to the roles page
+            return RedirectToAction("Edit", new { Id = roleId });
+        }
+*/
     }
 }

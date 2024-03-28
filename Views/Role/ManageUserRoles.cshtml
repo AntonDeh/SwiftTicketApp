@@ -1,0 +1,35 @@
+﻿@model List<SwiftTicketApp.ViewModels.Roles.UserRoleViewModel>
+
+<h2>Manage User Roles</h2>
+
+<form method="post" asp-action="UpdateUserRoles">
+    <input type="hidden" name="roleId" value="@ViewBag.roleId" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Current Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(m => m[i].UserId)
+                        @Html.DisplayFor(m => m[i].UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m[i].CurrentRoleName)
+                    </td>
+
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+<a asp-action="Index">Back to Roles List</a>

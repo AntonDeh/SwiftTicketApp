@@ -13,7 +13,17 @@
             <li><a href="@Url.Action("FindTicket", "Ticket")">Ticket Finder - Searching for a specific ticket? Click here to find it.</a></li>
             @if (User.IsInRole("Admin"))
             {
-                <li><a href="/Role/Index">Role Management - Click here to manage roles.</a></li>
+                
+                <li><a href="@Url.Action("Index", "Role")">Role Management - Click here to manage roles.</a></li>
+                <li><a href="@Url.Action("ManageUserRoles", "Role")">Manage User Roles - Click here to assign roles to users.</a></li>
+            }
+            @if (User.IsInRole("Technician"))
+            {
+                <li><a href="@Url.Action("YourAction", "YourController")">Technician Dashboard - Click here to access the technician dashboard.</a></li>
+            }
+            @if (User.IsInRole("Client"))
+            {
+                <li><a href="@Url.Action("ClientRequests", "Ticket")">My Requests - View your service requests.</a></li>
             }
         </ul>
     </div>
