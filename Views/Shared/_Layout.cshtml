@@ -25,7 +25,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <!-- Add login/logout buttons -->
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">
@@ -39,6 +38,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a> 
+                            </li> 
                         }
                     </ul>
                 </div>
