@@ -77,5 +77,30 @@ namespace SwiftTicketApp.Controllers
             }
             return View(model);
         }
+        // POST: Admin/DeleteUser
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    // User deleted successfully
+                    return RedirectToAction("UsersList");
+                }
+                else
+                {
+                    // Return a response with error code 500 (Internal Server Error)
+                    // and send an error message
+                    return StatusCode(500, "User could not be deleted. Please try again.");
+                }
+            }
+
+            // User not found or other error
+            return RedirectToAction("UsersList");
+        }
+
     }
 }
