@@ -123,6 +123,86 @@ namespace SwiftTicketApp.Controllers
             // User not found or other error
             return RedirectToAction("UsersList");
         }
+        // GET: Admin/EditUser
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("UsersList");
+            }
 
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email ?? "Unknown",
+                UserName = user.UserName ?? "Unknown"
+            };
+
+            return View(model);
+        }
+
+        // POST: Admin/EditUser
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.Id);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "User not found.";
+                    return RedirectToAction("UsersList");
+                }
+
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    // Error handling when updating a user
+                    foreach (var error in updateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
+                    return View(model);
+                }
+
+                // Optional: Password update if provided
+                if (!string.IsNullOrWhiteSpace(model.NewPassword)) // Use NewPassword for clarity
+                {
+                    // Remove the old password if it exists
+                    var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+                    if (!removePasswordResult.Succeeded)
+                    {
+                        // If there was an issue removing the old password, return the errors
+                        foreach (var error in removePasswordResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+                    // Add the new password
+                    var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
+                    if (!addPasswordResult.Succeeded)
+                    {
+                        // Handle errors for adding the new password
+                        foreach (var error in addPasswordResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+                }
+                // Redirect to the user list after successful update
+                return RedirectToAction("UsersList");
+            }
+            // If we get here, something was wrong with the model
+            return View(model);
+        }
     }
 }
