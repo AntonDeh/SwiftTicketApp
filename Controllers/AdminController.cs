@@ -46,12 +46,14 @@ namespace SwiftTicketApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserViewModel model)
         {
+            // Prepare a list of roles to return to the form in case of error
+            PrepareRoles(model);
+
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
-                
                 if (result.Succeeded)
                 {
                     // Add a user to the selected role
@@ -60,23 +62,43 @@ namespace SwiftTicketApp.Controllers
                         var addToRoleResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
                         if (!addToRoleResult.Succeeded)
                         {
-                            // Error handling when adding to a role
+                            // Handle errors when adding to a role
+                            foreach (var error in addToRoleResult.Errors)
+                            {
+                                ModelState.AddModelError("", $"Error adding user to role: {error.Description}");
+                            }
+
+                            // Return to the add form with error information
+                            return View(model);
                         }
                     }
 
+                    // User successfully added and assigned to role, redirect to user list
                     return RedirectToAction("UsersList");
                 }
                 else
                 {
-                    // If there are errors, add them to ModelState to display them on the form
+                    // If there are errors when creating a user, add them to ModelState
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        ModelState.AddModelError("", error.Description);
                     }
                 }
             }
+
+            // If the model does not pass validation or if there are errors when creating the user,
+            // return to model view to show errors
             return View(model);
         }
+
+        private void PrepareRoles(AddUserViewModel model)
+        {
+            model.Roles = _roleManager.Roles
+                .ToList()
+                .Select(r => new SelectListItem { Value = r.Name, Text = r.Name })
+                .ToList();
+        }
+
         // POST: Admin/DeleteUser
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string userId)
