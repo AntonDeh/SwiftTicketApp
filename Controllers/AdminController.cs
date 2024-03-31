@@ -33,11 +33,16 @@ namespace SwiftTicketApp.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // Вернуться к списку пользователей или к странице успеха
+                    // If the user is successfully added, we redirect to the list of users
+                    return RedirectToAction("UsersList");
                 }
                 else
                 {
-                    // Обработать ошибки
+                    // If there are errors, add them to ModelState to display them on the form
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
             return View(model);

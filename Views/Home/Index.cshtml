@@ -16,6 +16,7 @@
                 
                 <li><a href="@Url.Action("Index", "Role")">Role Management - Click here to manage roles.</a></li>
                 <li><a href="@Url.Action("ManageUserRoles", "Role")">Manage User Roles - Click here to assign roles to users.</a></li>
+                <li><a href="@Url.Action("UsersList", "Admin")">User Management - Click here to manage users.</a></li>
             }
             @if (User.IsInRole("Technician"))
             {
