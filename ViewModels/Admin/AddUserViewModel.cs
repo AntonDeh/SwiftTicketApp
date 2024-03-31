@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace SwiftTicketApp.ViewModels.Admin
 {
@@ -13,6 +14,7 @@ namespace SwiftTicketApp.ViewModels.Admin
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public string SelectedRole { get; set; } = string.Empty;
+        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>(); // List for dropdown
     }
 }
