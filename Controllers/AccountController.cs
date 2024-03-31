@@ -42,18 +42,7 @@ namespace SwiftTicketApp.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email) ?? throw new Exception("cannot find user");
-                    // Is "Technician"?
-                    var isInTechnicianRole = await _userManager.IsInRoleAsync(user, "Technician");
-                    if (isInTechnicianRole)
-                    {
-                        // If the user belongs to the Technician role, we redirect him to the "Service Catalog" page
-                        return RedirectToAction("ServiceCatalog", "Home");
-                    }
-                    else
-                    {
-                        // 
-                        return RedirectToLocal(returnUrl);
-                    }
+                    return RedirectToLocal(returnUrl);
                 }
                 else
                 {
