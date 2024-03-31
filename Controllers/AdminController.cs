@@ -23,7 +23,14 @@ namespace SwiftTicketApp.Controllers
             return View(users);
         }
 
-        // Method for adding a new user
+        // GET: Admin/AddUser
+        [HttpGet]
+        public IActionResult AddUser()
+        {
+            return View(new AddUserViewModel()); // Returning a view with an empty model
+        }
+
+        // POST: Admin/AddUser - Method for adding a new user
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserViewModel model)
         {

@@ -1,7 +1,10 @@
 ﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
 
 <h2>Users List</h2>
-
+<!-- Button to add a new user -->
+<div>
+    <a href="@Url.Action("AddUser", "Admin")" class="btn btn-primary">Add New User</a>
+</div>
 <table class="table">
     <thead>
         <tr>
