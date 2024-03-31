@@ -1,33 +1,79 @@
 ﻿@model HomeViewModel
 
-<h2>Swift Ticket</h2>
 @if (Model.IsUserAuthenticated)
 {
-    <div>
-        <h3>Service Catalog</h3>
-        <ul>
-            <li><a href="@Url.Action("CreateRequest", "Ticket")">Service Request - Click here to submit a service request.</a></li>
-            <li><a href="@Url.Action("FindTicket", "Ticket")">Ticket Finder - Searching for a specific ticket? Click here to find it.</a></li>
+    <div class="mt-4">
+        <h2 class="text-center mb-4">Service Catalog</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Service Request</h5>
+                        <p class="card-text">Click here to submit a service request to iLS team on your site.</p>
+                        <a href="@Url.Action("CreateRequest", "Ticket")" class="btn btn-primary">Submit Request</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Ticket Finder</h5>
+                        <p class="card-text">Searching for a specific ticket? Click here to find it.</p>
+                        <a href="@Url.Action("FindTicket", "Ticket")" class="btn btn-primary">Find Ticket</a>
+                    </div>
+                </div>
+            </div>
             @if (User.IsInRole("Admin"))
             {
-                
-                <li><a href="@Url.Action("Index", "Role")">Role Management - Click here to manage roles.</a></li>
-                <li><a href="@Url.Action("ManageUserRoles", "Role")">Manage User Roles - Click here to assign roles to users.</a></li>
-                <li><a href="@Url.Action("UsersList", "Admin")">User Management - Click here to manage users.</a></li>
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Role Management</h5>
+                            <p class="card-text">Click here to manage roles.</p>
+                            <a href="@Url.Action("Index", "Role")" class="btn btn-primary">Manage Roles</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">User Management</h5>
+                            <p class="card-text">Click here to assign roles to users and manage them.</p>
+                            <a href="@Url.Action("UsersList", "Admin")" class="btn btn-primary">Manage Users</a>
+                        </div>
+                    </div>
+                </div>
             }
             @if (User.IsInRole("Technician"))
             {
-                <li><a href="@Url.Action("YourAction", "YourController")">Technician Dashboard - Click here to access the technician dashboard.</a></li>
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Technician Dashboard</h5>
+                            <p class="card-text">Access your service dashboard and manage requests.</p>
+                            <a href="@Url.Action("YourAction", "YourController")" class="btn btn-primary">Dashboard</a>
+                        </div>
+                    </div>
+                </div>
             }
             @if (User.IsInRole("Client"))
             {
-                <li><a href="@Url.Action("ClientRequests", "Ticket")">My Requests - View your service requests.</a></li>
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">My Requests</h5>
+                            <p class="card-text">View and manage your service requests.</p>
+                            <a href="@Url.Action("ClientRequests", "Ticket")" class="btn btn-primary">View Requests</a>
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     </div>
 }
 else
 {
-    <p>Please <a href="@Url.Action("Login", "Account")">log in</a> to access the service catalog.</p>
+    <div class="text-center mt-4">
+        <p>Please <a href="@Url.Action("Login", "Account")">log in</a> to access the service catalog.</p>
+    </div>
 }
-
