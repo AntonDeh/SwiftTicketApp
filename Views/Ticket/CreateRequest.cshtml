@@ -1,10 +1,61 @@
-﻿@{
-    ViewData["Title"] = "Create Service Request";
-}
+﻿@model CreateTicketViewModel
 
-<h2>Create Service Request</h2>
+<div class="container mt-5">
+    <h2 class="text-center">Submit Incident</h2>
 
-<div>
-    <p>Здесь будет форма для создания запроса на обслуживание.</p>
-    <!-- Форма и соответствующие поля ввода -->
+    <form asp-action="SubmitIncident" method="post" class="mt-4" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="currentSite" class="form-label">Current Site *</label>
+            <select id="currentSite" class="form-select">
+                <option value="">Please select</option>
+                <!-- Дополнительные опции -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category *</label>
+            <select id="category" class="form-select">
+                <option value="">Please select a category</option>
+                <!-- Дополнительные опции -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description *</label>
+            <textarea id="description" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="mobileNumber" class="form-label">Mobile Number</label>
+            <input type="tel" id="mobileNumber" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="location" class="form-label">Lab / Location *</label>
+            <input type="text" id="location" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="urgency" class="form-label">Urgency *</label>
+            <select id="urgency" class="form-select">
+                <option value="Low">Low</option>
+                <!-- Дополнительные опции -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="cc" class="form-label">CC</label>
+            <input type="email" multiple id="cc" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="attachments" class="form-label">Attachments</label>
+            <input type="file" id="attachments" class="form-control" multiple>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
 </div>

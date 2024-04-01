@@ -1,4 +1,6 @@
-﻿namespace SwiftTicketApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SwiftTicketApp.Models
 {
     public class Ticket
     {
@@ -8,7 +10,16 @@
         public DateTime CreatedAt { get; set; } // The date and time the ticket was created
         public DateTime? ClosedAt { get; set; } // The date and time the ticket was closed, nullable if still open
         public string Status { get; set; } = string.Empty; // The current status of the ticket (e.g., "Open", "In Progress", "Closed")
-        public required string UserId { get; set; } // Reference to the user who created the ticket
+        
+        [Required]
+        public string UserId { get; set; } = string.Empty; // Reference to the user who created the ticket
+
+        public string CurrentSite { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string SubCategory { get; set; } = string.Empty;
+        public string Urgency { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string LabLocation { get; set; } = string.Empty;
 
         // Navigation properties
         public User? User { get; set; } // The user who created the ticket

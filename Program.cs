@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using SwiftTicketApp.Data;
 using SwiftTicketApp.Services;
-
+using SwiftTicketApp.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +23,8 @@ builder.Services.AddControllersWithViews();
 // Register HttpClient and MailgunEmailService
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<MailgunEmailService>();
+// Ticket Service
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 
 
