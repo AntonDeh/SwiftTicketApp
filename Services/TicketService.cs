@@ -1,4 +1,6 @@
-﻿using SwiftTicketApp.Data;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SwiftTicketApp.Data;
 using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels.Tickets;
@@ -7,7 +9,6 @@ namespace SwiftTicketApp.Services
 {
     public class TicketService : ITicketService
     {
-        // This example uses the database context for Entity Framework Core
         private readonly ApplicationDbContext _context;
 
         public TicketService(ApplicationDbContext context)
@@ -50,7 +51,33 @@ namespace SwiftTicketApp.Services
             }
         }
 
-        // Methods for other ticket operations
+        // Methods to fetch dropdown data
+        public async Task<List<SelectListItem>> GetAvailableSitesAsync()
+        {
+            return await _context.Sites.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.Name
+            }).ToListAsync();
+        }
+
+        public async Task<List<SelectListItem>> GetAvailableCategoriesAsync()
+        {
+            return await _context.Categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToListAsync();
+        }
+
+        public async Task<List<SelectListItem>> GetAvailableUrgenciesAsync()
+        {
+            return await _context.UrgencyLevels.Select(u => new SelectListItem
+            {
+                Value = u.Id.ToString(),
+                Text = u.Name
+            }).ToListAsync();
+        }
     }
 
     public class ServiceResponse

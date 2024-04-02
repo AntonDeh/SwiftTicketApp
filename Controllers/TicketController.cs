@@ -16,14 +16,14 @@ namespace SwiftTicketApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateRequest()
+        public async Task<IActionResult> CreateRequestAsync()
         {
             var model = new CreateTicketViewModel
             {
                 // Populate lists if they need to be dynamic
-                AvailableSites = GetAvailableSites(),
-                AvailableCategories = GetAvailableCategories(),
-                AvailableUrgencies = GetAvailableUrgencies()
+                AvailableSites = await _ticketService.GetAvailableSitesAsync(),
+                AvailableCategories = await _ticketService.GetAvailableCategoriesAsync(),
+                AvailableUrgencies = await _ticketService.GetAvailableUrgenciesAsync()
             };
 
             return View(model);
@@ -55,6 +55,7 @@ namespace SwiftTicketApp.Controllers
             model.AvailableSites = GetAvailableSites();
             model.AvailableCategories = GetAvailableCategories();
             model.AvailableUrgencies = GetAvailableUrgencies();
+
             return View(model);
         }
 

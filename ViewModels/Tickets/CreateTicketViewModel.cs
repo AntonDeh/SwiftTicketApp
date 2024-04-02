@@ -4,22 +4,29 @@ namespace SwiftTicketApp.ViewModels.Tickets
 {
     public class CreateTicketViewModel
     {
-        public string CurrentSite { get; set; }
-        public string Category { get; set; }
-        public string SubCategory { get; set; } // Если есть подкатегории
-        public string Description { get; set; }
-        public string MobileNumber { get; set; }
-        public string LabLocation { get; set; }
-        public string Urgency { get; set; }
-        public string CC { get; set; }
-        public List<IFormFile> Attachments { get; set; } // Для загрузки файлов
+        private List<IFormFile> attachments = new List<IFormFile>();
 
-        // Списки для выпадающих меню, если они заполняются динамически
-        public List<SelectListItem> AvailableSites { get; set; }
-        public List<SelectListItem> AvailableCategories { get; set; }
-        public List<SelectListItem> AvailableUrgencies { get; set; }
+        public string CurrentSite { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string SubCategory { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string LabLocation { get; set; } = string.Empty;
+        public string Urgency { get; set; } = string.Empty;
+        public string CC { get; set; } = string.Empty;
 
-        // Можно добавить дополнительные поля по мере необходимости
+        // To upload files
+        public List<IFormFile> Attachments
+        {
+            get => attachments;
+            set => attachments = value;
+        }
+
+        // Lists for dropdown menus if they are filled dynamically
+        public List<SelectListItem> AvailableSites { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> AvailableCategories { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> AvailableUrgencies { get; set; } = new List<SelectListItem>();
+
     }
 
 }

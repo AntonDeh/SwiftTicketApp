@@ -12,6 +12,11 @@ namespace SwiftTicketApp.Data
         public DbSet<Ticket> Tickets { get; set; } // Represents the Tickets table
         public DbSet<ServiceHistory> ServiceHistories { get; set; } // Represents the ServiceHistories table
         public DbSet<Comment> Comments { get; set; } // Represents the Comments table
+        public DbSet<Site> Sites { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<UrgencyLevel> UrgencyLevels { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +50,27 @@ namespace SwiftTicketApp.Data
                 .HasMany(u => u.ServiceHistories) // Specifies that a User has many ServiceHistories
                 .WithOne(s => s.User) // Specifies that a ServiceHistory record is associated with one User
                 .HasForeignKey(s => s.UserId); // Defines the foreign key in the ServiceHistory entity pointing to User
+
+            // Initial data load for Sites
+            modelBuilder.Entity<Site>().HasData(
+                new Site { Id = 1, Name = "IDC" },
+                new Site { Id = 2, Name = "PTK" },
+                new Site { Id = 3, Name = "JER" }
+            );
+
+            // Initial data loading for Categories
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Tech Support" },
+                new Category { Id = 2, Name = "Purchasing" },
+                new Category { Id = 3, Name = "Environment" }
+            );
+
+            // Initial data loading for UrgencyLevels
+            modelBuilder.Entity<UrgencyLevel>().HasData(
+                new UrgencyLevel { Id = 1, Name = "Low" },
+                new UrgencyLevel { Id = 2, Name = "High" },
+                new UrgencyLevel { Id = 3, Name = "Normal" }
+            );
 
 
             // Initialize an admin role and user at startup

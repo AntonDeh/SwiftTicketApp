@@ -1,56 +1,61 @@
 ﻿@model CreateTicketViewModel
 
 <div class="container mt-5">
-    <h2 class="text-center">Submit Incident</h2>
+    <h2 class="text-center">Submit Service Request</h2>
 
-    <form asp-action="SubmitIncident" method="post" class="mt-4" enctype="multipart/form-data">
+    <form asp-action="CreateRequest" method="post" class="mt-4" enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="currentSite" class="form-label">Current Site *</label>
-            <select id="currentSite" class="form-select">
+            <label asp-for="CurrentSite" class="form-label">Current Site *</label>
+            <select asp-for="CurrentSite" class="form-select">
                 <option value="">Please select</option>
-                <!-- Дополнительные опции -->
+                @foreach (var site in Model.AvailableSites)
+                {
+                    <option value="@site.Value">@site.Text</option>
+                }
             </select>
         </div>
 
         <div class="mb-3">
-            <label for="category" class="form-label">Category *</label>
-            <select id="category" class="form-select">
+            <label asp-for="Category" class="form-label">Category *</label>
+            <select asp-for="Category" class="form-select">
                 <option value="">Please select a category</option>
-                <!-- Дополнительные опции -->
+                @foreach (var category in Model.AvailableCategories)
+                {
+                    <option value="@category.Value">@category.Text</option>
+                }
             </select>
         </div>
 
         <div class="mb-3">
-            <label for="description" class="form-label">Description *</label>
-            <textarea id="description" class="form-control" rows="5"></textarea>
+            <label asp-for="Description" class="form-label">Description *</label>
+            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
         </div>
 
         <div class="mb-3">
-            <label for="mobileNumber" class="form-label">Mobile Number</label>
-            <input type="tel" id="mobileNumber" class="form-control">
+            <label asp-for="MobileNumber" class="form-label">Mobile Number</label>
+            <input asp-for="MobileNumber" class="form-control">
         </div>
 
         <div class="mb-3">
-            <label for="location" class="form-label">Lab / Location *</label>
-            <input type="text" id="location" class="form-control">
+            <label asp-for="LabLocation" class="form-label">Lab / Location *</label>
+            <input asp-for="LabLocation" class="form-control">
         </div>
 
         <div class="mb-3">
-            <label for="urgency" class="form-label">Urgency *</label>
-            <select id="urgency" class="form-select">
-                <option value="Low">Low</option>
-                <!-- Дополнительные опции -->
+            <label asp-for="Urgency" class="form-label">Urgency *</label>
+            <select asp-for="Urgency" class="form-select">
+                <option value="">Please select urgency</option>
+                @foreach (var urgency in Model.AvailableUrgencies)
+                {
+                    <option value="@urgency.Value">@urgency.Text</option>
+                }
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="cc" class="form-label">CC</label>
-            <input type="email" multiple id="cc" class="form-control">
-        </div>
 
         <div class="mb-3">
-            <label for="attachments" class="form-label">Attachments</label>
-            <input type="file" id="attachments" class="form-control" multiple>
+            <label asp-for="Attachments" class="form-label">Attachments</label>
+            <input asp-for="Attachments" type="file" class="form-control" multiple>
         </div>
 
         <div class="text-center">
