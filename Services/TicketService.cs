@@ -78,6 +78,13 @@ namespace SwiftTicketApp.Services
                 Text = u.Name
             }).ToListAsync();
         }
+        public async Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId)
+        {
+            return await _context.Tickets
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
+        }
+
     }
 
     public class ServiceResponse

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SwiftTicketApp.Models;
 using SwiftTicketApp.Services;
 using SwiftTicketApp.ViewModels.Tickets;
 
@@ -10,5 +11,6 @@ namespace SwiftTicketApp.Interfaces
         Task<List<SelectListItem>> GetAvailableSitesAsync();
         Task<List<SelectListItem>> GetAvailableCategoriesAsync();
         Task<List<SelectListItem>> GetAvailableUrgenciesAsync();
+        Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId);
     }
 }

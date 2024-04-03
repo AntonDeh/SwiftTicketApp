@@ -55,7 +55,7 @@ namespace SwiftTicketApp.Controllers
                 if (result.Success)
                 {
                     // Handling successful ticket creation
-                    return RedirectToAction("SuccessPage"); // Redirect to the success page
+                    return RedirectToAction("MyTickets");
                 }
                 else
                 {
@@ -69,6 +69,21 @@ namespace SwiftTicketApp.Controllers
 
             // If something goes wrong, return the model back to the view to display errors
             return View(model);
+        }
+        // GET: /Ticket/MyTickets
+        [HttpGet]
+        public async Task<IActionResult> MyTickets()
+        {
+            var userId = _userManager.GetUserId(User); // Get the current user ID
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account"); // If the user is not authenticated, we redirect to the login page
+            }
+
+            var tickets = await _ticketService.GetTicketsByUserIdAsync(userId); // Retrieving user tickets
+
+            return View(tickets); // Passing a list of tickets to the view
         }
 
         // Stubs for methods for obtaining data for drop-down lists
