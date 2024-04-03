@@ -16,7 +16,7 @@ namespace SwiftTicketApp.Services
             _context = context;
         }
 
-        public async Task<ServiceResponse> CreateTicketAsync(CreateTicketViewModel model)
+        public async Task<ServiceResponse> CreateTicketAsync(CreateTicketViewModel model, string userId)
         {
             var serviceResponse = new ServiceResponse();
 
@@ -24,7 +24,7 @@ namespace SwiftTicketApp.Services
             {
                 var ticket = new Ticket
                 {
-
+                    UserId = userId,
                     CurrentSite = model.CurrentSite,
                     Category = model.Category,
                     Description = model.Description,

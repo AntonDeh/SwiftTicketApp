@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.ViewModels.Tickets;
@@ -9,12 +10,14 @@ namespace SwiftTicketApp.Controllers
     {
         // ticket processing service
         private readonly ITicketService _ticketService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, UserManager<IdentityUser> userManager)
         {
             _ticketService = ticketService;
+            _userManager = userManager;
         }
-
+        // GET : /Ticket/CreateRequestAsync
         [HttpGet]
         public async Task<IActionResult> CreateRequestAsync()
         {
@@ -28,18 +31,31 @@ namespace SwiftTicketApp.Controllers
 
             return View(model);
         }
-
+        // POST : /Ticket/CreateRequestAsync
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateTicketViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Processing ticket creation
-                var result = await _ticketService.CreateTicketAsync(model);
+                // Getting the current user ID
+                var userId = _userManager.GetUserId(User);
+
+                // Checking if userId is not null
+                if (userId == null)
+                {
+                    // If userId is null, the user is not authenticated
+                    // You can redirect the user to the login page or add an error to ModelState
+                    ModelState.AddModelError(string.Empty, "You must be logged in to submit a ticket.");
+                    // Return the model to the view to display the error
+                    return View(model);
+                }
+
+                // If the user is authenticated, process the ticket creation
+                var result = await _ticketService.CreateTicketAsync(model, userId);
                 if (result.Success)
                 {
                     // Handling successful ticket creation
-                    return RedirectToAction("SuccessPage"); // Redirect to success page
+                    return RedirectToAction("SuccessPage"); // Redirect to the success page
                 }
                 else
                 {
@@ -51,11 +67,7 @@ namespace SwiftTicketApp.Controllers
                 }
             }
 
-            // If something goes wrong, return the model back to the view
-            model.AvailableSites = GetAvailableSites();
-            model.AvailableCategories = GetAvailableCategories();
-            model.AvailableUrgencies = GetAvailableUrgencies();
-
+            // If something goes wrong, return the model back to the view to display errors
             return View(model);
         }
 
