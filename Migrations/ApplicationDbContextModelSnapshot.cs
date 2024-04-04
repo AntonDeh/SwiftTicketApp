@@ -51,7 +51,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "68cc9661-2f5b-4c17-bd8d-29b6ab739de1",
+                            Id = "85c00cf9-8b1d-4b6c-bd0b-f599f9fc5d1f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -158,15 +158,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "343e6460-c653-4fcf-bdf5-342b82b598c1",
+                            Id = "06f888ba-a740-4e7f-95ce-c9cf9cf7b44c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f7091d25-2481-4f80-bc61-e9f0ef9a94b1",
+                            ConcurrencyStamp = "64128735-1cb4-4eef-b60c-61ad353d5e0d",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMkqsR8hr2atnru6S8woqdvnz4nSpIqFce00PeMrW5UfkZp5b6Zal5ddF+/g+qzhSA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFS6Jw38aedqh47kZ43zK3OdKidvfjiiCjyWKXwU6EIWBs82m8/qKlGdBOeyDTnNnA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -240,8 +240,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "343e6460-c653-4fcf-bdf5-342b82b598c1",
-                            RoleId = "68cc9661-2f5b-4c17-bd8d-29b6ab739de1"
+                            UserId = "06f888ba-a740-4e7f-95ce-c9cf9cf7b44c",
+                            RoleId = "85c00cf9-8b1d-4b6c-bd0b-f599f9fc5d1f"
                         });
                 });
 
@@ -432,9 +432,8 @@ namespace SwiftTicketApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SubCategory")
                         .IsRequired()
@@ -454,9 +453,61 @@ namespace SwiftTicketApp.Migrations
 
                     b.HasKey("TicketId");
 
+                    b.HasIndex("StatusId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("SwiftTicketApp.Models.TicketStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TicketStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "New"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Assigned"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Closed"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "User respond"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Closed By User"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Pending Supply"
+                        });
                 });
 
             modelBuilder.Entity("SwiftTicketApp.Models.UrgencyLevel", b =>
@@ -592,11 +643,19 @@ namespace SwiftTicketApp.Migrations
 
             modelBuilder.Entity("SwiftTicketApp.Models.Ticket", b =>
                 {
+                    b.HasOne("SwiftTicketApp.Models.TicketStatus", "TicketStatus")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SwiftTicketApp.Models.User", "User")
                         .WithMany("TicketsCreated")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("TicketStatus");
 
                     b.Navigation("User");
                 });

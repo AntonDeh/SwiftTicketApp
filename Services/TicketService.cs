@@ -19,12 +19,19 @@ namespace SwiftTicketApp.Services
         public async Task<ServiceResponse> CreateTicketAsync(CreateTicketViewModel model, string userId)
         {
             var serviceResponse = new ServiceResponse();
-
+            var defaultStatus = await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name == "New");
+            if (defaultStatus == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Default status 'New' not found.";
+                return serviceResponse;
+            }
             try
             {
                 var ticket = new Ticket
                 {
                     UserId = userId,
+                    StatusId = defaultStatus.Id,
                     CurrentSite = model.CurrentSite,
                     Category = model.Category,
                     Description = model.Description,
@@ -82,6 +89,7 @@ namespace SwiftTicketApp.Services
         {
             return await _context.Tickets
                 .Where(t => t.UserId == userId)
+                .Include(t => t.TicketStatus)
                 .ToListAsync();
         }
 

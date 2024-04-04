@@ -15,6 +15,8 @@ namespace SwiftTicketApp.Data
         public DbSet<Site> Sites { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UrgencyLevel> UrgencyLevels { get; set; }
+        public DbSet<TicketStatus> TicketStatuses { get; set; }
+
 
 
 
@@ -72,7 +74,14 @@ namespace SwiftTicketApp.Data
                 new UrgencyLevel { Id = 3, Name = "Normal" }
             );
 
-
+            modelBuilder.Entity<TicketStatus>().HasData(
+                new TicketStatus { Id = 1, Name = "New" },
+                new TicketStatus { Id = 2, Name = "Assigned" },
+                new TicketStatus { Id = 3, Name = "Closed" },
+                new TicketStatus { Id = 4, Name = "User respond" },
+                new TicketStatus { Id = 5, Name = "Closed By User" },
+                new TicketStatus { Id = 6, Name = "Pending Supply" }
+    );
             // Initialize an admin role and user at startup
             InitializeAdminUser(modelBuilder);
 

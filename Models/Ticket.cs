@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SwiftTicketApp.Models
 {
@@ -7,10 +8,14 @@ namespace SwiftTicketApp.Models
         public int TicketId { get; set; } // Unique identifier for the ticket
         public string Title { get; set; } = string.Empty; // The title of the ticket
         public string Description { get; set; } = string.Empty; // Detailed description of the ticket issue
-        public DateTime CreatedAt { get; set; } // The date and time the ticket was created
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // The date and time the ticket was created
         public DateTime? ClosedAt { get; set; } // The date and time the ticket was closed, nullable if still open
-        public string Status { get; set; } = string.Empty; // The current status of the ticket (e.g., "Open", "In Progress", "Closed")
         
+        [ForeignKey("TicketStatus")]
+        public int StatusId { get; set; } = 1; // Assigning the status "New" by default
+
+        public virtual TicketStatus? TicketStatus { get; set; }
+
         [Required]
         public string UserId { get; set; } = string.Empty; // Reference to the user who created the ticket
 
@@ -28,6 +33,7 @@ namespace SwiftTicketApp.Models
 
         public Ticket()
         {
+
             Comments = new HashSet<Comment>();
             ServiceHistories = new HashSet<ServiceHistory>();
         }
