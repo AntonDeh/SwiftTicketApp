@@ -8,6 +8,7 @@
             <th>Description</th>
             <th>Status</th>
             <th>Created At</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +18,9 @@
                 <td>@ticket.Description</td>
                 <td>@(ticket.TicketStatus?.Name ?? "No Status")</td>
                 <td>@ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-controller="Ticket" asp-action="Edit" asp-route-id="@ticket.TicketId" class="btn btn-primary">Edit</a>
+                </td>
             </tr>
         }
     </tbody>

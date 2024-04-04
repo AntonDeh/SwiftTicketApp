@@ -12,5 +12,8 @@ namespace SwiftTicketApp.Interfaces
         Task<List<SelectListItem>> GetAvailableCategoriesAsync();
         Task<List<SelectListItem>> GetAvailableUrgenciesAsync();
         Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId);
+        Task<Ticket?> GetTicketByIdAsync(int ticketId);
+        Task<bool> UpdateTicketAsync(EditTicketViewModel model);
+
     }
 }

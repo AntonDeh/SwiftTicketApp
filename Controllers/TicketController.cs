@@ -70,6 +70,7 @@ namespace SwiftTicketApp.Controllers
             // If something goes wrong, return the model back to the view to display errors
             return View(model);
         }
+
         // GET: /Ticket/MyTickets
         [HttpGet]
         public async Task<IActionResult> MyTickets()
@@ -84,6 +85,43 @@ namespace SwiftTicketApp.Controllers
             var tickets = await _ticketService.GetTicketsByUserIdAsync(userId); // Retrieving user tickets
 
             return View(tickets); // Passing a list of tickets to the view
+        }
+        // GET: /Ticket/Edit/{id}
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var ticket = await _ticketService.GetTicketByIdAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditTicketViewModel
+            {
+                TicketId = ticket.TicketId,
+                Description = ticket.Description,
+            };
+
+            return View(model);
+        }
+        // POST: /Ticket/Edit
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditTicketViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var updateSuccess = await _ticketService.UpdateTicketAsync(model);
+                if (updateSuccess)
+                {
+                    return RedirectToAction("MyTickets");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "An error occurred while updating the ticket.");
+                }
+            }
+
+            return View(model);
         }
 
         // Stubs for methods for obtaining data for drop-down lists

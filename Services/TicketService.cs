@@ -92,7 +92,31 @@ namespace SwiftTicketApp.Services
                 .Include(t => t.TicketStatus)
                 .ToListAsync();
         }
+        public async Task<Ticket?> GetTicketByIdAsync(int ticketId)
+        {
+            return await _context.Tickets
+                .Include(t => t.TicketStatus)
+                .FirstOrDefaultAsync(t => t.TicketId == ticketId);
+        }
 
+
+        public async Task<bool> UpdateTicketAsync(EditTicketViewModel model)
+        {
+            var ticket = await _context.Tickets.FindAsync(model.TicketId);
+            if (ticket == null)
+            {
+                return false; // Ticket not found
+            }
+
+            // Update ticket properties
+            ticket.Description = model.Description;
+            // Update other properties as needed
+
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return true; // Successful update
+        }
     }
 
     public class ServiceResponse
