@@ -108,9 +108,12 @@ namespace SwiftTicketApp.Services
                 return false; // Ticket not found
             }
 
-            // Update ticket properties
             ticket.Description = model.Description;
-            // Update other properties as needed
+            ticket.CurrentSite = ticket.CurrentSite;
+            ticket.Category = ticket.Category;
+            ticket.MobileNumber = ticket.MobileNumber;
+            ticket.LabLocation = ticket.LabLocation;
+            ticket.Urgency = ticket.Urgency;
 
             _context.Tickets.Update(ticket);
             await _context.SaveChangesAsync();

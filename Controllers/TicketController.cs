@@ -100,7 +100,16 @@ namespace SwiftTicketApp.Controllers
             {
                 TicketId = ticket.TicketId,
                 Description = ticket.Description,
+                CurrentSite = ticket.CurrentSite,
+                Category = ticket.Category,
+                MobileNumber = ticket.MobileNumber,
+                LabLocation = ticket.LabLocation,
+                Urgency = ticket.Urgency
             };
+            ViewBag.CurrentSite = new SelectList(await _ticketService.GetAvailableSitesAsync(), "Value", "Text", ticket.CurrentSite);
+            ViewBag.Category = new SelectList(await _ticketService.GetAvailableCategoriesAsync(), "Value", "Text", ticket.Category);
+            ViewBag.Urgency = new SelectList(await _ticketService.GetAvailableUrgenciesAsync(), "Value", "Text", ticket.Urgency);
+
 
             return View(model);
         }

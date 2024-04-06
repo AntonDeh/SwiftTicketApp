@@ -15,6 +15,8 @@ namespace SwiftTicketApp.ViewModels.Tickets
         public string Category { get; set; } = string.Empty;
         public string SubCategory { get; set; } = string.Empty;
         public string Urgency { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string LabLocation { get; set; } = string.Empty;
 
 
         public int StatusId { get; set; }
