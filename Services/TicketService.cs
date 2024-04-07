@@ -87,13 +87,24 @@ namespace SwiftTicketApp.Services
         }
         public async Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId)
         {
-            //int closedStatusId = _context.TicketStatuses.FirstOrDefault(s => s.Name == "Closed")?.Id ?? 0;
+            //  Find the "Closed" status ID in the database asynchronously.
+            var closedStatusId = await _context.TicketStatuses
+                                               .Where(s => s.Name == "Closed")
+                                               .Select(s => s.Id)
+                                               .FirstOrDefaultAsync();
+            if (closedStatusId == 0)
+            {
+                // If the "Closed" status ID is not found, log the error or handle it accordingly.
+                return new List<Ticket>();
+            }
+
+            // We return all user tickets that do not have the "Closed" status.
             return await _context.Tickets
-                //.Where(t => t.UserId == userId && t.StatusId != closedStatusId)
-                .Where(t => t.UserId == userId)
-                .Include(t => t.TicketStatus)
-                .ToListAsync();
+                                 .Where(t => t.UserId == userId && t.StatusId != closedStatusId)
+                                 .Include(t => t.TicketStatus)
+                                 .ToListAsync();
         }
+
         public async Task<Ticket?> GetTicketByIdAsync(int ticketId)
         {
             return await _context.Tickets
