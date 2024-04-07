@@ -132,6 +132,27 @@ namespace SwiftTicketApp.Controllers
 
             return View(model);
         }
+        // POST: /Ticket/CloseTicket
+        [HttpPost]
+        public async Task<IActionResult> CloseTicket(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var response = await _ticketService.CloseTicketAsync(id, userId);
+            if (response.Success)
+            {
+                return RedirectToAction("MyTickets");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = response.Message;
+                return RedirectToAction("MyTickets");
+            }
+        }
 
         // Stubs for methods for obtaining data for drop-down lists
         private List<SelectListItem> GetAvailableSites() => new List<SelectListItem>();

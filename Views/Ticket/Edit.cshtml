@@ -1,34 +1,57 @@
 ﻿@model EditTicketViewModel
 
-<h2>Edit Ticket</h2>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="text-center">Edit Ticket</h2>
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="TicketId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="TicketId" />
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="CurrentSite" class="control-label"></label>
+                <select asp-for="CurrentSite" asp-items="ViewBag.CurrentSite" class="form-control"></select>
+                <span asp-validation-for="CurrentSite" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" asp-items="ViewBag.Category" class="form-control"></select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MobileNumber" class="control-label"></label>
+                <input asp-for="MobileNumber" class="form-control" />
+                <span asp-validation-for="MobileNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LabLocation" class="control-label"></label>
+                <input asp-for="LabLocation" class="form-control" />
+                <span asp-validation-for="LabLocation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Urgency" class="control-label"></label>
+                <select asp-for="Urgency" asp-items="ViewBag.Urgency" class="form-control"></select>
+                <span asp-validation-for="Urgency" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="CurrentSite" class="control-label"></label>
-        <select asp-for="CurrentSite" asp-items="ViewBag.CurrentSite" class="form-control"></select>
-    </div>
-    <div class="form-group">
-        <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category" asp-items="ViewBag.Category" class="form-control"></select>
-    </div>
-    <div class="form-group">
-        <label asp-for="MobileNumber" class="control-label"></label>
-        <input asp-for="MobileNumber" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="LabLocation" class="control-label"></label>
-        <input asp-for="LabLocation" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Urgency" class="control-label"></label>
-        <select asp-for="Urgency" asp-items="ViewBag.Urgency" class="form-control"></select>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save changes" class="btn btn-primary" />
-    </div>
-</form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

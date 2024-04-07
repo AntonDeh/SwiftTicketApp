@@ -87,7 +87,9 @@ namespace SwiftTicketApp.Services
         }
         public async Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId)
         {
+            //int closedStatusId = _context.TicketStatuses.FirstOrDefault(s => s.Name == "Closed")?.Id ?? 0;
             return await _context.Tickets
+                //.Where(t => t.UserId == userId && t.StatusId != closedStatusId)
                 .Where(t => t.UserId == userId)
                 .Include(t => t.TicketStatus)
                 .ToListAsync();
@@ -120,6 +122,47 @@ namespace SwiftTicketApp.Services
 
             return true; // Successful update
         }
+        public async Task<ServiceResponse> CloseTicketAsync(int ticketId, string userId)
+        {
+            var serviceResponse = new ServiceResponse();
+            // We look for a ticket by ID and check that the user has access to it
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId && t.UserId == userId);
+
+            if (ticket == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Ticket not found or access denied.";
+                return serviceResponse;
+            }
+
+            // We look for the "Closed" status in the status table
+            var closedStatus = await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name == "Closed");
+            if (closedStatus == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Status 'Closed' not found.";
+                return serviceResponse;
+            }
+
+            // Assign the status ID "Closed" to the ticket
+            ticket.StatusId = closedStatus.Id;
+
+            try
+            {
+                _context.Tickets.Update(ticket);
+                await _context.SaveChangesAsync();
+                serviceResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+
+            return serviceResponse;
+        }
+
+
     }
 
     public class ServiceResponse
