@@ -172,6 +172,18 @@ namespace SwiftTicketApp.Services
 
             return serviceResponse;
         }
+        public async Task<IEnumerable<Ticket>> SearchTicketsAsync(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return Enumerable.Empty<Ticket>();
+            }
+
+            return await _context.Tickets
+              .Where(t => t.Description.Contains(searchTerm) || t.TicketId.ToString() == searchTerm)
+              .Include(t => t.TicketStatus)
+              .ToListAsync();
+        }
 
 
     }

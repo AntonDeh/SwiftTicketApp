@@ -153,6 +153,26 @@ namespace SwiftTicketApp.Controllers
                 return RedirectToAction("MyTickets");
             }
         }
+        // GET: /Ticket/ShowSearchForm
+        [HttpGet]
+        public IActionResult ShowSearchForm()
+        {
+            var viewModel = new TicketSearchViewModel();
+            return View("TicketSearch", viewModel);
+        }
+        // GET: /Ticket/Search Ticket
+        [HttpGet]
+        public async Task<IActionResult> PerformSearch(string searchTerm)
+        {
+            var searchResults = await _ticketService.SearchTicketsAsync(searchTerm);
+            var viewModel = new TicketSearchViewModel
+            {
+                SearchTerm = searchTerm,
+                SearchResults = searchResults
+            };
+            return View("TicketSearch", viewModel);
+        }
+
 
         // Stubs for methods for obtaining data for drop-down lists
         private List<SelectListItem> GetAvailableSites() => new List<SelectListItem>();

@@ -15,6 +15,7 @@ namespace SwiftTicketApp.Interfaces
         Task<Ticket?> GetTicketByIdAsync(int ticketId);
         Task<bool> UpdateTicketAsync(EditTicketViewModel model);
         Task<ServiceResponse> CloseTicketAsync(int ticketId, string userId);
+        Task<IEnumerable<Ticket>> SearchTicketsAsync(string searchTerm);
 
     }
 }
