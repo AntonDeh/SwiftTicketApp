@@ -192,6 +192,24 @@ namespace SwiftTicketApp.Controllers
 
             return View(viewModel);
         }
+        // GET: /Ticket/ClosedTickets
+        [HttpGet]
+        public async Task<IActionResult> ClosedTickets()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var closedTickets = await _ticketService.GetClosedTicketsByUserIdAsync(userId);
+            var viewModel = new ClosedTicketsViewModel
+            {
+                ClosedTickets = closedTickets
+            };
+
+            return View(viewModel);
+        }
 
 
 

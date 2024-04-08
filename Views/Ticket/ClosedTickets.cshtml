@@ -1,0 +1,36 @@
+﻿@model ClosedTicketsViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center">Closed Ticket History</h2>
+
+    @if (Model.ClosedTickets.Any())
+    {
+        <table class="table table-bordered table-striped mt-4">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Creation Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.ClosedTickets)
+                {
+                    <tr>
+                        <td>@ticket.TicketId</td>
+                        <td>@ticket.Description</td>
+                        <td>@(ticket.TicketStatus?.Name ?? "No Status")</td>
+                        <td>@ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            There are no closed tickets.
+        </div>
+    }
+</div>
