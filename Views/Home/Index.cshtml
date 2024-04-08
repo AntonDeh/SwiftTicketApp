@@ -47,11 +47,36 @@
 
             @if (User.IsInRole("Admin"))
             {
-                <!-- Admin specific tiles go here -->
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">User Management</h5>
+                            <p class="card-text">Click here to assign roles to users and manage them.</p>
+                            <a href="@Url.Action("UsersList", "Admin")" class="btn btn-info">Manage Users</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Role Management</h5>
+                            <p class="card-text">Click here to manage roles.</p>
+                            <a href="@Url.Action("Index", "Role")" class="btn btn-info">Manage Roles</a>
+                        </div>
+                    </div>
+                </div>
             }
             @if (User.IsInRole("Technician"))
             {
-                <!-- Technician specific tiles go here -->
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Technician Dashboard</h5>
+                            <p class="card-text">Access your service dashboard and manage requests.</p>
+                            <a href="@Url.Action("YourAction", "YourController")" class="btn btn-primary">Dashboard</a>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     }
