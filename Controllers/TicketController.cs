@@ -172,6 +172,27 @@ namespace SwiftTicketApp.Controllers
             };
             return View("TicketSearch", viewModel);
         }
+        // GET: /Ticket/Details/{id}
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var ticket = await _ticketService.GetTicketByIdAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new TicketDetailsViewModel
+            {
+                TicketId = ticket.TicketId,
+                Description = ticket.Description,
+                Status = ticket.TicketStatus?.Name ?? "No Status",
+                CreatedAt = ticket.CreatedAt
+            };
+
+            return View(viewModel);
+        }
+
 
 
         // Stubs for methods for obtaining data for drop-down lists

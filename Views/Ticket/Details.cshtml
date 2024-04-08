@@ -1,0 +1,28 @@
+﻿@model TicketDetailsViewModel
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center">Ticket Details</h2>
+            <dl class="row">
+                <dt class="col-sm-4">Ticket ID:</dt>
+                <dd class="col-sm-8">@Model.TicketId</dd>
+
+                <dt class="col-sm-4">Description:</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+
+                <dt class="col-sm-4">Status:</dt>
+                <dd class="col-sm-8">@Model.Status</dd>
+
+                <dt class="col-sm-4">Created At:</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+
+
+            </dl>
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("MyTickets", "Ticket")" class="btn btn-secondary">Back to My Tickets</a>
+            </div>
+        </div>
+    </div>
+</div>
