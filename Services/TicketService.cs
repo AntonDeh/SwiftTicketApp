@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.Data;
 using SwiftTicketApp.Interfaces;
@@ -10,10 +11,12 @@ namespace SwiftTicketApp.Services
     public class TicketService : ITicketService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TicketService(ApplicationDbContext context)
+        public TicketService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<ServiceResponse> CreateTicketAsync(CreateTicketViewModel model, string userId)
@@ -192,7 +195,106 @@ namespace SwiftTicketApp.Services
                 .Include(t => t.TicketStatus)
                 .ToListAsync();
         }
-        
+        public async Task<List<SelectListItem>> GetAvailableStatusesAsync()
+        {
+            // Query to status table in database
+            var statuses = await _context.TicketStatuses
+                .Select(status => new SelectListItem
+                {
+                    Value = status.Name,
+                    Text = status.Name
+                })
+                .ToListAsync();
+
+            return statuses;
+        }
+        public async Task<List<SelectListItem>> GetAvailableSubmittersAsync()
+        {
+            // user table associated with tickets
+            var submitters = await _context.Users
+                .Select(user => new SelectListItem
+                {
+                    Value = user.UserName, 
+                    Text = user.UserName
+                })
+                .Distinct() 
+                .ToListAsync();
+
+            return submitters;
+        }
+        public async Task<List<SelectListItem>> GetAvailableTechniciansAsync()
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Technician");
+            return users.Select(user => new SelectListItem 
+            { 
+                Value = user.Id, 
+                Text = user.UserName 
+            })
+            .ToList();
+        }
+        public async Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync()
+        {
+            var ticketsWithTechnicianName = await _context.TicketAssignments
+                .Include(ta => ta.Ticket)
+                .Include(ta => ta.Technician)
+                .Select(ta => new SelectListItem
+                {
+                    Value = ta.TicketId.ToString(),
+                    Text = $"{ta.Ticket.Description} - {ta.Technician.UserName}" 
+                })
+                .ToListAsync();
+
+            return ticketsWithTechnicianName;
+        }
+
+
+        public async Task<IEnumerable<Ticket>> GetFilteredTicketsAsync(
+            string status,
+            string submitter,
+            string subCategory,
+            string technician,
+            string urgencyLevel,
+            string site)
+        {
+            var query = _context.Tickets.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(t => t.TicketStatus != null && t.TicketStatus.Name == status);
+            }
+
+            if (!string.IsNullOrWhiteSpace(submitter))
+            {
+                query = query.Where(t => t.User != null && t.User.UserName == submitter);
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(technician))
+            {
+                
+                query = query.Include(t => t.User) 
+                             .Where(t => t.User != null && t.User.UserName == technician);
+            }
+
+            if (!string.IsNullOrWhiteSpace(urgencyLevel))
+            {
+                query = query.Where(t => t.Urgency == urgencyLevel);
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(site))
+            {
+                query = query.Where(t => t.CurrentSite == site);
+            }
+
+
+            // Executing a query taking into account all filters
+            var filteredTickets = await query
+                .Include(t => t.TicketStatus) // Connecting the necessary connections
+                .ToListAsync();
+
+            return filteredTickets;
+        }
 
     }
 

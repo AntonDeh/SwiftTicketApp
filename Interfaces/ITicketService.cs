@@ -17,6 +17,11 @@ namespace SwiftTicketApp.Interfaces
         Task<ServiceResponse> CloseTicketAsync(int ticketId, string userId);
         Task<IEnumerable<Ticket>> SearchTicketsAsync(string searchTerm);
         Task<IEnumerable<Ticket>> GetClosedTicketsByUserIdAsync(string userId);
+        Task<IEnumerable<Ticket>> GetFilteredTicketsAsync(string status, string submitter, string subCategory, string technician, string urgencyLevel, string site);
 
+        Task<List<SelectListItem>> GetAvailableStatusesAsync();
+        Task<List<SelectListItem>> GetAvailableSubmittersAsync();
+        Task<List<SelectListItem>> GetAvailableTechniciansAsync();
+        Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync();
     }
 }

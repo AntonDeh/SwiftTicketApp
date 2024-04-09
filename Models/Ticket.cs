@@ -30,12 +30,15 @@ namespace SwiftTicketApp.Models
         public User? User { get; set; } // The user who created the ticket
         public ICollection<Comment> Comments { get; set; } // Collection of comments associated with the ticket
         public ICollection<ServiceHistory> ServiceHistories { get; set; } // Collection of service history records for the ticket
+        // Adding a navigation property for TicketAssignments
+        public ICollection<TicketAssignment> TicketAssignments { get; set; }
 
         public Ticket()
         {
 
             Comments = new HashSet<Comment>();
             ServiceHistories = new HashSet<ServiceHistory>();
+            TicketAssignments = new HashSet<TicketAssignment>();
         }
     }
 }

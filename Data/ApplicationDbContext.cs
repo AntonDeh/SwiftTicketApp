@@ -16,6 +16,7 @@ namespace SwiftTicketApp.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<UrgencyLevel> UrgencyLevels { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
+        public DbSet<TicketAssignment> TicketAssignments { get; set; }
 
 
 

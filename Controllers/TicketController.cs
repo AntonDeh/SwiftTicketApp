@@ -210,7 +210,26 @@ namespace SwiftTicketApp.Controllers
 
             return View(viewModel);
         }
+        // GET: /Ticket/Dashboard
+        [HttpGet]
+        public async Task<IActionResult> TechnicianDashboard(string status, string submitter, string subCategory, string technician, string urgencyLevel, string site)
+        {
+            // We receive filtered tickets
+            var filteredTickets = await _ticketService.GetFilteredTicketsAsync(status, submitter, subCategory, technician, urgencyLevel, site);
 
+            // Creating a ViewModel for a dashboard with filtered tickets and lists for dropdowns
+            var viewModel = new TechnicianDashboardViewModel
+            {
+                Tickets = filteredTickets,
+                Statuses = await _ticketService.GetAvailableStatusesAsync(),
+                Submitters = await _ticketService.GetAvailableSubmittersAsync(),
+                Technicians = await _ticketService.GetAvailableTechniciansAsync(),
+                UrgencyLevels = await _ticketService.GetAvailableUrgenciesAsync(),
+                Sites = await _ticketService.GetAvailableSitesAsync()
+            };
+
+            return View(viewModel);
+        }
 
 
         // Stubs for methods for obtaining data for drop-down lists
