@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.Data;
@@ -278,19 +279,21 @@ namespace SwiftTicketApp.Services
 
             if (!string.IsNullOrWhiteSpace(urgencyLevel))
             {
-                query = query.Where(t => t.Urgency == urgencyLevel);
+                query = query.Where(t => t.UrgencyLevel != null && t.UrgencyLevel.Name == urgencyLevel);
             }
 
 
             if (!string.IsNullOrWhiteSpace(site))
             {
-                query = query.Where(t => t.CurrentSite == site);
+                query = query.Where(t => t.Site != null && t.Site.Name == site);
             }
 
 
             // Executing a query taking into account all filters
             var filteredTickets = await query
                 .Include(t => t.TicketStatus) // Connecting the necessary connections
+                .Include(t => t.UrgencyLevel)
+                .Include(t => t.Site)
                 .ToListAsync();
 
             return filteredTickets;

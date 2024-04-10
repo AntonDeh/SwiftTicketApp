@@ -12,8 +12,8 @@ using SwiftTicketApp.Data;
 namespace SwiftTicketApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240409113920_AddTicketAssignments")]
-    partial class AddTicketAssignments
+    [Migration("20240410104635_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2ac61b6d-f75a-486d-bcbe-021ae0fb9bed",
+                            Id = "aa351365-0a14-4451-aca8-fd1608c213f2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -161,15 +161,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a2db4ef-bd47-426c-aebb-863818d7fce7",
+                            Id = "b256e715-a3f9-4e31-9fa3-716547d24d28",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e7241d76-b2b2-458c-83d5-5b32ef8eb0f7",
+                            ConcurrencyStamp = "5d421b6b-0563-4057-8714-26b697c8d9a1",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGpMnIMRvDCr8FkuMN6XVlvcTLfG6fR2v6NeduA/Wgy8LPNKnkgQlgw7N8ORCazZAA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMX9JakTFSDsYbVmFWfkAcugr7jpBZzECC1MjTe6/qs/fmDc4b+PaJj3VXkDfvgRbw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -243,8 +243,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "5a2db4ef-bd47-426c-aebb-863818d7fce7",
-                            RoleId = "2ac61b6d-f75a-486d-bcbe-021ae0fb9bed"
+                            UserId = "b256e715-a3f9-4e31-9fa3-716547d24d28",
+                            RoleId = "aa351365-0a14-4451-aca8-fd1608c213f2"
                         });
                 });
 
@@ -419,9 +419,8 @@ namespace SwiftTicketApp.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CurrentSite")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CurrentSite")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -446,9 +445,8 @@ namespace SwiftTicketApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Urgency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Urgency")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -456,7 +454,11 @@ namespace SwiftTicketApp.Migrations
 
                     b.HasKey("TicketId");
 
+                    b.HasIndex("CurrentSite");
+
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("Urgency");
 
                     b.HasIndex("UserId");
 
@@ -670,9 +672,21 @@ namespace SwiftTicketApp.Migrations
 
             modelBuilder.Entity("SwiftTicketApp.Models.Ticket", b =>
                 {
+                    b.HasOne("SwiftTicketApp.Models.Site", "Site")
+                        .WithMany()
+                        .HasForeignKey("CurrentSite")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SwiftTicketApp.Models.TicketStatus", "TicketStatus")
                         .WithMany()
                         .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SwiftTicketApp.Models.UrgencyLevel", "UrgencyLevel")
+                        .WithMany()
+                        .HasForeignKey("Urgency")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -682,7 +696,11 @@ namespace SwiftTicketApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Site");
+
                     b.Navigation("TicketStatus");
+
+                    b.Navigation("UrgencyLevel");
 
                     b.Navigation("User");
                 });

@@ -3,7 +3,7 @@
 <div class="container mt-5">
     <h2 class="text-center">Technician Dashboard</h2>
 
-    <form asp-action="Dashboard" method="get" class="mb-5">
+    <form asp-action="TechnicianDashboard" method="get" class="mb-5">
         <div class="row g-3 align-items-end">
             <div class="col-md-2">
                 <label for="status" class="form-label">Status</label>
@@ -59,13 +59,13 @@
             {
                 <tr>
                     <td>@ticket.TicketId</td>
-                    <td>@ticket.TicketStatus</td>
+                    <td>@ticket.TicketStatus?.Name</td>
                     <td>@(ticket.User?.UserName ?? "N/A")</td>
                     <td>@ticket.Description</td>
-                    <td>@ticket.TicketAssignments.FirstOrDefault()?.Technician?.UserName ?? "Not assigned"</td>
+                    <td>@(ticket.TicketAssignments.FirstOrDefault()?.Technician?.UserName ?? "Not assigned")</td>
                     <td>@ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@ticket.Urgency</td>
-                    <td>@ticket.CurrentSite</td>
+                    <td>@(ticket.UrgencyLevel?.Name ?? "N/A")</td>
+                    <td>@(ticket.Site?.Name ?? "N/A")</td>
                 </tr>
             }
         </tbody>

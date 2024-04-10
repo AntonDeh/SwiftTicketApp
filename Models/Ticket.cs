@@ -19,23 +19,35 @@ namespace SwiftTicketApp.Models
         [Required]
         public string UserId { get; set; } = string.Empty; // Reference to the user who created the ticket
 
-        public string CurrentSite { get; set; } = string.Empty;
+        // External key for Site
+        [ForeignKey("Site")]
+        public int CurrentSite { get; set; } = 1;
+        public virtual Site? Site { get; set; }
+
         public string Category { get; set; } = string.Empty;
         public string SubCategory { get; set; } = string.Empty;
-        public string Urgency { get; set; } = string.Empty;
+        
+        // External key for UrgencyLevel
+        [ForeignKey("UrgencyLevel")]
+        public int Urgency { get; set; } = 1;
+
+        // Navigation property for UrgencyLevel
+        public virtual UrgencyLevel? UrgencyLevel { get; set; }
+
         public string MobileNumber { get; set; } = string.Empty;
         public string LabLocation { get; set; } = string.Empty;
+        
 
         // Navigation properties
         public User? User { get; set; } // The user who created the ticket
         public ICollection<Comment> Comments { get; set; } // Collection of comments associated with the ticket
         public ICollection<ServiceHistory> ServiceHistories { get; set; } // Collection of service history records for the ticket
+        
         // Adding a navigation property for TicketAssignments
         public ICollection<TicketAssignment> TicketAssignments { get; set; }
 
         public Ticket()
         {
-
             Comments = new HashSet<Comment>();
             ServiceHistories = new HashSet<ServiceHistory>();
             TicketAssignments = new HashSet<TicketAssignment>();

@@ -6,13 +6,13 @@ namespace SwiftTicketApp.ViewModels.Tickets
     {
         private List<IFormFile> attachments = new List<IFormFile>();
 
-        public string CurrentSite { get; set; } = string.Empty;
+        public int CurrentSite { get; set; }
         public string Category { get; set; } = string.Empty;
         public string SubCategory { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string MobileNumber { get; set; } = string.Empty;
         public string LabLocation { get; set; } = string.Empty;
-        public string Urgency { get; set; } = string.Empty;
+        public int Urgency { get; set; }
         public string CC { get; set; } = string.Empty;
 
         // To upload files

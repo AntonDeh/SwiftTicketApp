@@ -223,10 +223,10 @@ namespace SwiftTicketApp.Migrations
                     ClosedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CurrentSite = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentSite = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Urgency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Urgency = table.Column<int>(type: "int", nullable: false),
                     MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LabLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -240,9 +240,21 @@ namespace SwiftTicketApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Tickets_Sites_CurrentSite",
+                        column: x => x.CurrentSite,
+                        principalTable: "Sites",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Tickets_TicketStatuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "TicketStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_UrgencyLevels_Urgency",
+                        column: x => x.Urgency,
+                        principalTable: "UrgencyLevels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -303,15 +315,41 @@ namespace SwiftTicketApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TicketAssignments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    TechnicianId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketAssignments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TicketAssignments_AspNetUsers_TechnicianId",
+                        column: x => x.TechnicianId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TicketAssignments_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "TicketId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "85c00cf9-8b1d-4b6c-bd0b-f599f9fc5d1f", null, "Admin", "ADMIN" });
+                values: new object[] { "aa351365-0a14-4451-aca8-fd1608c213f2", null, "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "06f888ba-a740-4e7f-95ce-c9cf9cf7b44c", 0, "64128735-1cb4-4eef-b60c-61ad353d5e0d", "IdentityUser", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFS6Jw38aedqh47kZ43zK3OdKidvfjiiCjyWKXwU6EIWBs82m8/qKlGdBOeyDTnNnA==", null, false, "", false, "admin@admin.com" });
+                values: new object[] { "b256e715-a3f9-4e31-9fa3-716547d24d28", 0, "5d421b6b-0563-4057-8714-26b697c8d9a1", "IdentityUser", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEMX9JakTFSDsYbVmFWfkAcugr7jpBZzECC1MjTe6/qs/fmDc4b+PaJj3VXkDfvgRbw==", null, false, "", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -359,7 +397,7 @@ namespace SwiftTicketApp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "85c00cf9-8b1d-4b6c-bd0b-f599f9fc5d1f", "06f888ba-a740-4e7f-95ce-c9cf9cf7b44c" });
+                values: new object[] { "aa351365-0a14-4451-aca8-fd1608c213f2", "b256e715-a3f9-4e31-9fa3-716547d24d28" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -421,9 +459,29 @@ namespace SwiftTicketApp.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TicketAssignments_TechnicianId",
+                table: "TicketAssignments",
+                column: "TechnicianId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TicketAssignments_TicketId",
+                table: "TicketAssignments",
+                column: "TicketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_CurrentSite",
+                table: "Tickets",
+                column: "CurrentSite");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_StatusId",
                 table: "Tickets",
                 column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_Urgency",
+                table: "Tickets",
+                column: "Urgency");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_UserId",
@@ -459,10 +517,7 @@ namespace SwiftTicketApp.Migrations
                 name: "ServiceHistories");
 
             migrationBuilder.DropTable(
-                name: "Sites");
-
-            migrationBuilder.DropTable(
-                name: "UrgencyLevels");
+                name: "TicketAssignments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -474,7 +529,13 @@ namespace SwiftTicketApp.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Sites");
+
+            migrationBuilder.DropTable(
                 name: "TicketStatuses");
+
+            migrationBuilder.DropTable(
+                name: "UrgencyLevels");
         }
     }
 }
