@@ -10,11 +10,11 @@ namespace SwiftTicketApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly MailgunEmailService _emailService;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, MailgunEmailService emailService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, MailgunEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;

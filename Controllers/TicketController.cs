@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SwiftTicketApp.Interfaces;
+using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels.Tickets;
 
 namespace SwiftTicketApp.Controllers
@@ -10,9 +11,9 @@ namespace SwiftTicketApp.Controllers
     {
         // ticket processing service
         private readonly ITicketService _ticketService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public TicketController(ITicketService ticketService, UserManager<IdentityUser> userManager)
+        public TicketController(ITicketService ticketService, UserManager<User> userManager)
         {
             _ticketService = ticketService;
             _userManager = userManager;
@@ -79,6 +80,7 @@ namespace SwiftTicketApp.Controllers
 
             if (userId == null)
             {
+                TempData["ErrorMessage"] = "You must be logged in to access this page.";
                 return RedirectToAction("Login", "Account"); // If the user is not authenticated, we redirect to the login page
             }
 
@@ -139,6 +141,7 @@ namespace SwiftTicketApp.Controllers
             var userId = _userManager.GetUserId(User);
             if (userId == null)
             {
+                TempData["ErrorMessage"] = "You must be logged in to access this page.";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -199,6 +202,7 @@ namespace SwiftTicketApp.Controllers
             var userId = _userManager.GetUserId(User);
             if (userId == null)
             {
+                TempData["ErrorMessage"] = "You must be logged in to access this page.";
                 return RedirectToAction("Login", "Account");
             }
 

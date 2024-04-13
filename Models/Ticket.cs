@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SwiftTicketApp.Models
@@ -16,14 +17,13 @@ namespace SwiftTicketApp.Models
 
         public virtual TicketStatus? TicketStatus { get; set; }
 
-        [Required]
-        public string UserId { get; set; } = string.Empty; // Reference to the user who created the ticket
+        [ForeignKey("UserId")]
+        public string UserId { get; set; } = string.Empty; // Ensure this is the same type as the Id in AspNetUsers, which seems to be a string
+        public virtual User? User { get; set; } // This should match the type used by Identity
 
-        // External key for Site
         [ForeignKey("Site")]
         public int CurrentSite { get; set; } = 1;
         public virtual Site? Site { get; set; }
-
         public string Category { get; set; } = string.Empty;
         public string SubCategory { get; set; } = string.Empty;
         
@@ -38,8 +38,7 @@ namespace SwiftTicketApp.Models
         public string LabLocation { get; set; } = string.Empty;
         
 
-        // Navigation properties
-        public User? User { get; set; } // The user who created the ticket
+        
         public ICollection<Comment> Comments { get; set; } // Collection of comments associated with the ticket
         public ICollection<ServiceHistory> ServiceHistories { get; set; } // Collection of service history records for the ticket
         

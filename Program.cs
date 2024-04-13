@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using SwiftTicketApp.Data;
 using SwiftTicketApp.Services;
 using SwiftTicketApp.Interfaces;
+using SwiftTicketApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SwiftTicketConnectionString")));
 
 // Adding Identity services to the application
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()   // Adds role support
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

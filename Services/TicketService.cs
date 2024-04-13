@@ -12,9 +12,9 @@ namespace SwiftTicketApp.Services
     public class TicketService : ITicketService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public TicketService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public TicketService(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -291,9 +291,11 @@ namespace SwiftTicketApp.Services
 
             // Executing a query taking into account all filters
             var filteredTickets = await query
+                .Include(t => t.User)
                 .Include(t => t.TicketStatus) // Connecting the necessary connections
                 .Include(t => t.UrgencyLevel)
                 .Include(t => t.Site)
+                
                 .ToListAsync();
 
             return filteredTickets;

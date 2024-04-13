@@ -51,7 +51,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa351365-0a14-4451-aca8-fd1608c213f2",
+                            Id = "2232ef35-5438-41ba-ab69-bc1cc8b63664",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -154,24 +154,6 @@ namespace SwiftTicketApp.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
 
                     b.UseTphMappingStrategy();
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "b256e715-a3f9-4e31-9fa3-716547d24d28",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "5d421b6b-0563-4057-8714-26b697c8d9a1",
-                            Email = "admin@admin.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@ADMIN.COM",
-                            NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMX9JakTFSDsYbVmFWfkAcugr7jpBZzECC1MjTe6/qs/fmDc4b+PaJj3VXkDfvgRbw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@admin.com"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -240,8 +222,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "b256e715-a3f9-4e31-9fa3-716547d24d28",
-                            RoleId = "aa351365-0a14-4451-aca8-fd1608c213f2"
+                            UserId = "765bd22b-c1dc-4235-b945-f22f46c8b359",
+                            RoleId = "2232ef35-5438-41ba-ab69-bc1cc8b63664"
                         });
                 });
 
@@ -576,6 +558,24 @@ namespace SwiftTicketApp.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.HasDiscriminator().HasValue("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "765bd22b-c1dc-4235-b945-f22f46c8b359",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b6bbe59e-cb0b-41bf-bc71-6a3f6b9f7ac5",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN@ADMIN.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFFY530Cisb15r2sfjawrKbdqC8gYqMbnMkw5VIu1sTbvjPcZ+20Un/1qd6ESSgnFw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@admin.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -640,7 +640,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasOne("SwiftTicketApp.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ticket");
@@ -659,7 +659,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasOne("SwiftTicketApp.Models.User", "User")
                         .WithMany("ServiceHistories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ticket");

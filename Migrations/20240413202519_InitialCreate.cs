@@ -278,7 +278,7 @@ namespace SwiftTicketApp.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_Tickets_TicketId",
                         column: x => x.TicketId,
@@ -306,7 +306,7 @@ namespace SwiftTicketApp.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ServiceHistories_Tickets_TicketId",
                         column: x => x.TicketId,
@@ -344,12 +344,12 @@ namespace SwiftTicketApp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "aa351365-0a14-4451-aca8-fd1608c213f2", null, "Admin", "ADMIN" });
+                values: new object[] { "2232ef35-5438-41ba-ab69-bc1cc8b63664", null, "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "b256e715-a3f9-4e31-9fa3-716547d24d28", 0, "5d421b6b-0563-4057-8714-26b697c8d9a1", "IdentityUser", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEMX9JakTFSDsYbVmFWfkAcugr7jpBZzECC1MjTe6/qs/fmDc4b+PaJj3VXkDfvgRbw==", null, false, "", false, "admin@admin.com" });
+                values: new object[] { "765bd22b-c1dc-4235-b945-f22f46c8b359", 0, "b6bbe59e-cb0b-41bf-bc71-6a3f6b9f7ac5", "User", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFFY530Cisb15r2sfjawrKbdqC8gYqMbnMkw5VIu1sTbvjPcZ+20Un/1qd6ESSgnFw==", null, false, "", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -397,7 +397,7 @@ namespace SwiftTicketApp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "aa351365-0a14-4451-aca8-fd1608c213f2", "b256e715-a3f9-4e31-9fa3-716547d24d28" });
+                values: new object[] { "2232ef35-5438-41ba-ab69-bc1cc8b63664", "765bd22b-c1dc-4235-b945-f22f46c8b359" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

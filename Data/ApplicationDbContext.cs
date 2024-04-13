@@ -5,9 +5,22 @@ using SwiftTicketApp.Models;
 
 namespace SwiftTicketApp.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> User) : IdentityDbContext(User)
     {
 
+        private readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+    {
+        builder
+            .AddFilter((category, level) =>
+                category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information)
+            .AddConsole();
+    });
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLoggerFactory(loggerFactory);
+        // Другие настройки вашего контекста данных
+    }
         // DbSets represent collections of each entity that can be queried from the database
         public DbSet<Ticket> Tickets { get; set; } // Represents the Tickets table
         public DbSet<ServiceHistory> ServiceHistories { get; set; } // Represents the ServiceHistories table
@@ -46,14 +59,14 @@ namespace SwiftTicketApp.Data
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Comments) // Specifies that a User has many Comments
                 .WithOne(c => c.User) // Specifies that a Comment is associated with one User
-                .HasForeignKey(c => c.UserId); // Defines the foreign key in the Comment entity pointing to User
-
+                .HasForeignKey(c => c.UserId) // Defines the foreign key in the Comment entity pointing to User
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete to avoid cycles or multiple cascade paths
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.ServiceHistories) // Specifies that a User has many ServiceHistories
                 .WithOne(s => s.User) // Specifies that a ServiceHistory record is associated with one User
-                .HasForeignKey(s => s.UserId); // Defines the foreign key in the ServiceHistory entity pointing to User
-
+                .HasForeignKey(s => s.UserId) // Defines the foreign key in the ServiceHistory entity pointing to User
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete to avoid cycles or multiple cascade paths
             // Initial data load for Sites
             modelBuilder.Entity<Site>().HasData(
                 new Site { Id = 1, Name = "IDC" },
@@ -103,9 +116,9 @@ namespace SwiftTicketApp.Data
             };
 
             // Admin user
-            var hasher = new PasswordHasher<IdentityUser>();
+            var hasher = new PasswordHasher<User>();
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var adminUser = new IdentityUser
+            var adminUser = new User
             {
                 Id = adminUserId, // Use a GUID or predefined ID
                 UserName = "admin@admin.com",
@@ -127,7 +140,7 @@ namespace SwiftTicketApp.Data
 
             // Seed admin role and user
             modelBuilder.Entity<IdentityRole>().HasData(adminRole);
-            modelBuilder.Entity<IdentityUser>().HasData(adminUser);
+            modelBuilder.Entity<User>().HasData(adminUser);
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(adminUserRole);
         }
     }

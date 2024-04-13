@@ -14,6 +14,7 @@ namespace SwiftTicketApp.Models
             TicketsCreated = new HashSet<Ticket>();
             Comments = new HashSet<Comment>();
             ServiceHistories = new HashSet<ServiceHistory>();
+
         }
     }
 }
