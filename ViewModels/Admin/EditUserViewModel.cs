@@ -17,7 +17,13 @@ namespace SwiftTicketApp.ViewModels.Admin
         [DataType(DataType.Password)]
         [Display(Name = "New Password")]
         public string NewPassword { get; set; } = string.Empty; // Optional for password change
+        
+        // Property for the current user role
+        [Display(Name = "Current Role")]
+        public string CurrentRole { get; set; } = string.Empty; // Current user role
 
+        // Property for selecting a new role
+        [Display(Name = "Select Role")]
         public string SelectedRole { get; set; } = string.Empty;
         public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
     }

@@ -134,13 +134,24 @@ namespace SwiftTicketApp.Controllers
                 TempData["ErrorMessage"] = "User not found.";
                 return RedirectToAction("UsersList");
             }
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var rolesSelectList = _roleManager.Roles.Select(r => new SelectListItem
+            {
+                Value = r.Name,
+                Text = r.Name,
+                Selected = userRoles.Contains(r.Name ?? string.Empty)
+            }).ToList();
 
             var model = new EditUserViewModel
             {
                 Id = user.Id,
                 Email = user.Email ?? "Unknown",
-                UserName = user.UserName ?? "Unknown"
-            };
+                UserName = user.UserName ?? "Unknown",
+                Roles = rolesSelectList,
+                // In the dropdown, the current user role was selected:
+                SelectedRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? string.Empty
+        };
 
             return View(model);
         }
@@ -172,6 +183,34 @@ namespace SwiftTicketApp.Controllers
 
                     return View(model);
                 }
+                // Update user roles
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var selectedRole = model.SelectedRole;
+                if (!currentRoles.Contains(selectedRole))
+                {
+                    var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                    if (!removeRolesResult.Succeeded)
+                    {
+                        foreach (var error in removeRolesResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(selectedRole))
+                    {
+                        var addRoleResult = await _userManager.AddToRoleAsync(user, selectedRole);
+                        if (!addRoleResult.Succeeded)
+                        {
+                            foreach (var error in addRoleResult.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            return View(model);
+                        }
+                    }
+                }
 
                 // Optional: Password update if provided
                 if (!string.IsNullOrWhiteSpace(model.NewPassword)) // Use NewPassword for clarity
@@ -202,6 +241,14 @@ namespace SwiftTicketApp.Controllers
                 // Redirect to the user list after successful update
                 return RedirectToAction("UsersList");
             }
+            // Reload the roles if model state is invalid or update fails
+            model.Roles = _roleManager.Roles.Select(r => new SelectListItem
+            {
+                Value = r.Name,
+                Text = r.Name,
+                Selected = (r.Name == model.SelectedRole)
+            }).ToList();
+
             // If we get here, something was wrong with the model
             return View(model);
         }
