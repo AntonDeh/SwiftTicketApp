@@ -216,10 +216,22 @@ namespace SwiftTicketApp.Controllers
         }
         // GET: /Ticket/Dashboard
         [HttpGet]
-        public async Task<IActionResult> TechnicianDashboard(string status, string submitter, string subCategory, string technician, string urgencyLevel, string site)
+        public async Task<IActionResult> TechnicianDashboard(
+            string status, 
+            string submitter, 
+            string subCategory, 
+            string technician, 
+            string urgencyLevel,
+            string site)
         {
             // We receive filtered tickets
-            var filteredTickets = await _ticketService.GetFilteredTicketsAsync(status, submitter, subCategory, technician, urgencyLevel, site);
+            var filteredTickets = await _ticketService.GetFilteredTicketsAsync(
+                status, 
+                submitter, 
+                subCategory, 
+                technician, 
+                urgencyLevel, 
+                site);
 
             // Creating a ViewModel for a dashboard with filtered tickets and lists for dropdowns
             var viewModel = new TechnicianDashboardViewModel
@@ -234,6 +246,31 @@ namespace SwiftTicketApp.Controllers
 
             return View(viewModel);
         }
+        // POST: /Ticket/Dashboard
+        [HttpPost]
+        public async Task<IActionResult> TechnicianDashboard(TechnicianDashboardViewModel model)
+        {
+            // Receive filtered tickets based on selected parameters
+            model.Tickets = await _ticketService.GetFilteredTicketsAsync(
+                model.SelectedStatus,
+                model.SelectedSubmitter,
+                model.SelectedSubCategory,
+                model.SelectedTechnician,
+                model.SelectedUrgencyLevel,
+                model.SelectedSite);
+
+            // Reloading lists for dropdowns
+            model.Statuses = await _ticketService.GetAvailableStatusesAsync();
+            model.Submitters = await _ticketService.GetAvailableSubmittersAsync();
+            model.Technicians = await _ticketService.GetAvailableTechniciansAsync();
+            model.UrgencyLevels = await _ticketService.GetAvailableUrgenciesAsync();
+            model.Sites = await _ticketService.GetAvailableSitesAsync();
+
+            // Returning the updated model to the view
+            return View("TechnicianDashboard", model);
+        }
+
+
 
 
         // Stubs for methods for obtaining data for drop-down lists

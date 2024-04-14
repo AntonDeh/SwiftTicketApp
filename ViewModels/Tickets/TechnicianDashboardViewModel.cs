@@ -20,5 +20,6 @@ namespace SwiftTicketApp.ViewModels.Tickets
         public string SelectedTechnician { get; set; } = string.Empty;
         public string SelectedUrgencyLevel { get; set; } = string.Empty;
         public string SelectedSite { get; set; } = string.Empty;
+
     }
 }

@@ -279,15 +279,15 @@ namespace SwiftTicketApp.Services
 
             if (!string.IsNullOrWhiteSpace(urgencyLevel))
             {
-                query = query.Where(t => t.UrgencyLevel != null && t.UrgencyLevel.Name == urgencyLevel);
+                var urgencyLevelId = int.Parse(urgencyLevel);
+                query = query.Where(t => t.Urgency == urgencyLevelId);
             }
-
 
             if (!string.IsNullOrWhiteSpace(site))
             {
-                query = query.Where(t => t.Site != null && t.Site.Name == site);
+                var siteId = int.Parse(site); 
+                query = query.Where(t => t.CurrentSite == siteId);
             }
-
 
             // Executing a query taking into account all filters
             var filteredTickets = await query
