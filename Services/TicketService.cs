@@ -42,10 +42,9 @@ namespace SwiftTicketApp.Services
                     MobileNumber = model.MobileNumber,
                     LabLocation = model.LabLocation,
                     Urgency = model.Urgency,
-  
-                };
+                    TechnicianId = null
 
-                // logic for processing and saving files if they were attached
+                };
 
                 _context.Tickets.Add(ticket);
                 await _context.SaveChangesAsync();
@@ -235,13 +234,12 @@ namespace SwiftTicketApp.Services
         }
         public async Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync()
         {
-            var ticketsWithTechnicianName = await _context.TicketAssignments
-                .Include(ta => ta.Ticket)
-                .Include(ta => ta.Technician)
-                .Select(ta => new SelectListItem
+            var ticketsWithTechnicianName = await _context.Tickets
+                .Include(t => t.Technician)
+                .Select(t => new SelectListItem
                 {
-                    Value = ta.TicketId.ToString(),
-                    Text = $"{ta.Ticket.Description} - {ta.Technician.UserName}" 
+                    Value = t.TicketId.ToString(),
+                    Text = t.Technician != null ? $"{t.Title} - {t.Technician.UserName}" : $"{t.Title} - Not_assigned"
                 })
                 .ToListAsync();
 
@@ -300,9 +298,93 @@ namespace SwiftTicketApp.Services
 
             return filteredTickets;
         }
+        public async Task<ServiceResponse> UpdateTicketStatusAsync(int ticketId, string userId, string newStatus)
+        {
+            var serviceResponse = new ServiceResponse();
 
+            // Checking user role
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null || !(await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Technician")))
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Access denied.";
+                return serviceResponse;
+            }
+
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Ticket not found.";
+                return serviceResponse;
+            }
+
+            var status = await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name.ToLower() == newStatus.ToLower());
+            if (status == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Status not found.";
+                return serviceResponse;
+            }
+
+            ticket.StatusId = status.Id;
+            try
+            {
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Ticket status updated successfully.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Error updating ticket status: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+        public async Task<ServiceResponse> AssignTicketToTechnicianAsync(int ticketId, string userId)
+        {
+            var serviceResponse = new ServiceResponse();
+
+            var ticket = await _context.Tickets.SingleOrDefaultAsync(t => t.TicketId == ticketId);
+            var technician = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+
+            if (ticket == null || technician == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ticket == null ? "Ticket not found." : "Technician not found.";
+                return serviceResponse;
+            }
+
+            // Ensure that the status is "Assigned"
+            var assignedStatus = await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name == "Assigned");
+            if (assignedStatus == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Assigned status not found.";
+                return serviceResponse;
+            }
+            ticket.StatusId = assignedStatus.Id;
+
+            // Update the TechnicianId directly
+            ticket.TechnicianId = userId;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Ticket has been assigned to the technician.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Error while assigning the ticket: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
     }
-
     public class ServiceResponse
     {
         public bool Success { get; set; }

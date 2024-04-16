@@ -3,41 +3,35 @@
 <div class="container mt-5">
     <h2 class="text-center">Technician Dashboard</h2>
 
-    <form asp-action="TechnicianDashboard" method="post" class="mb-5">
+    <form asp-action="TechnicianDashboard" method="get" class="mb-5">
         <div class="row g-3 align-items-end">
             <div class="col-md-2">
                 <label for="status" class="form-label">Status</label>
-                <select asp-for="SelectedStatus" class="form-control" asp-items="Model.Statuses">
+                <select id="status" name="status" class="form-select" asp-items="Model.Statuses">
                     <option value="">All</option>
                 </select>
             </div>
             <div class="col-md-2">
                 <label for="submitter" class="form-label">Submitter</label>
-                <select asp-for="SelectedSubmitter" class="form-select" asp-items="Model.Submitters">
-                    <option value="">All</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="subCategory" class="form-label">Sub Category</label>
-                <select asp-for="SelectedSubCategory" class="form-select" asp-items="Model.SubCategories">
+                <select id="submitter" name="submitter" class="form-select" asp-items="Model.Submitters">
                     <option value="">All</option>
                 </select>
             </div>
             <div class="col-md-2">
                 <label for="technician" class="form-label">Technician</label>
-                <select asp-for="SelectedTechnician" class="form-select" asp-items="Model.Technicians">
+                <select id="technician" name="technician" class="form-select" asp-items="Model.Technicians">
                     <option value="">All</option>
                 </select>
             </div>
             <div class="col-md-2">
                 <label for="urgencyLevel" class="form-label">Urgency</label>
-                <select asp-for="SelectedUrgencyLevel" class="form-select" asp-items="Model.UrgencyLevels">
+                <select id="urgencyLevel" name="urgencyLevel" class="form-select" asp-items="Model.UrgencyLevels">
                     <option value="">All</option>
                 </select>
             </div>
             <div class="col-md-2">
                 <label for="site" class="form-label">Site</label>
-                <select asp-for="SelectedSite" class="form-select" asp-items="Model.Sites">
+                <select id="site" name="site" class="form-select" asp-items="Model.Sites">
                     <option value="">All</option>
                 </select>
             </div>
@@ -58,6 +52,7 @@
                 <th>Request Time</th>
                 <th>Urgency</th>
                 <th>Site</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -68,10 +63,13 @@
                     <td>@ticket.TicketStatus?.Name</td>
                     <td>@(ticket.User?.UserName ?? "N/A")</td>
                     <td>@ticket.Description</td>
-                    <td>@(ticket.TicketAssignments.FirstOrDefault()?.Technician?.UserName ?? "Not assigned")</td>
+                    <td>@(ticket.Technician?.UserName ?? "Not assigned")</td>
                     <td>@ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@(ticket.UrgencyLevel?.Name ?? "N/A")</td>
                     <td>@(ticket.Site?.Name ?? "N/A")</td>
+                    <td>
+                        <a href="@Url.Action("Details", "Ticket", new { id = ticket.TicketId })" class="btn btn-primary btn-sm">View Details</a>
+                    </td>
                 </tr>
             }
         </tbody>

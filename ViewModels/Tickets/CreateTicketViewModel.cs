@@ -15,6 +15,7 @@ namespace SwiftTicketApp.ViewModels.Tickets
         public int Urgency { get; set; }
         public string CC { get; set; } = string.Empty;
 
+
         // To upload files
         public List<IFormFile> Attachments
         {

@@ -12,7 +12,7 @@ using SwiftTicketApp.Data;
 namespace SwiftTicketApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240413202519_InitialCreate")]
+    [Migration("20240416180248_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2232ef35-5438-41ba-ab69-bc1cc8b63664",
+                            Id = "854d57a1-5914-4212-951f-21d6b968db2e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -225,8 +225,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "765bd22b-c1dc-4235-b945-f22f46c8b359",
-                            RoleId = "2232ef35-5438-41ba-ab69-bc1cc8b63664"
+                            UserId = "9d5888e2-0594-4fa5-8587-d5fb4d18aba7",
+                            RoleId = "854d57a1-5914-4212-951f-21d6b968db2e"
                         });
                 });
 
@@ -423,6 +423,9 @@ namespace SwiftTicketApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TechnicianId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -440,35 +443,13 @@ namespace SwiftTicketApp.Migrations
 
                     b.HasIndex("StatusId");
 
+                    b.HasIndex("TechnicianId");
+
                     b.HasIndex("Urgency");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
-                });
-
-            modelBuilder.Entity("SwiftTicketApp.Models.TicketAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("TechnicianId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TechnicianId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("TicketAssignments");
                 });
 
             modelBuilder.Entity("SwiftTicketApp.Models.TicketStatus", b =>
@@ -565,15 +546,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "765bd22b-c1dc-4235-b945-f22f46c8b359",
+                            Id = "9d5888e2-0594-4fa5-8587-d5fb4d18aba7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b6bbe59e-cb0b-41bf-bc71-6a3f6b9f7ac5",
+                            ConcurrencyStamp = "e7cd6800-b970-4df0-a5eb-ade0cf1674ac",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFFY530Cisb15r2sfjawrKbdqC8gYqMbnMkw5VIu1sTbvjPcZ+20Un/1qd6ESSgnFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDb2dxYi/D6JUaBJx2dXOPX7c+PVmOuzqU/UqoM+am6jjYpZOIC439UNSDF9Pm8rkQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -684,6 +665,11 @@ namespace SwiftTicketApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SwiftTicketApp.Models.User", "Technician")
+                        .WithMany()
+                        .HasForeignKey("TechnicianId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("SwiftTicketApp.Models.UrgencyLevel", "UrgencyLevel")
                         .WithMany()
                         .HasForeignKey("Urgency")
@@ -698,6 +684,8 @@ namespace SwiftTicketApp.Migrations
 
                     b.Navigation("Site");
 
+                    b.Navigation("Technician");
+
                     b.Navigation("TicketStatus");
 
                     b.Navigation("UrgencyLevel");
@@ -705,32 +693,11 @@ namespace SwiftTicketApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SwiftTicketApp.Models.TicketAssignment", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Technician")
-                        .WithMany()
-                        .HasForeignKey("TechnicianId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SwiftTicketApp.Models.Ticket", "Ticket")
-                        .WithMany("TicketAssignments")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Technician");
-
-                    b.Navigation("Ticket");
-                });
-
             modelBuilder.Entity("SwiftTicketApp.Models.Ticket", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("ServiceHistories");
-
-                    b.Navigation("TicketAssignments");
                 });
 
             modelBuilder.Entity("SwiftTicketApp.Models.User", b =>

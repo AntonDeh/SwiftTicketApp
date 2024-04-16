@@ -29,7 +29,6 @@ namespace SwiftTicketApp.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<UrgencyLevel> UrgencyLevels { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
-        public DbSet<TicketAssignment> TicketAssignments { get; set; }
 
 
 
@@ -67,6 +66,13 @@ namespace SwiftTicketApp.Data
                 .WithOne(s => s.User) // Specifies that a ServiceHistory record is associated with one User
                 .HasForeignKey(s => s.UserId) // Defines the foreign key in the ServiceHistory entity pointing to User
                 .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete to avoid cycles or multiple cascade paths
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Technician) 
+                .WithMany() 
+                .HasForeignKey(t => t.TechnicianId) 
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Initial data load for Sites
             modelBuilder.Entity<Site>().HasData(
                 new Site { Id = 1, Name = "IDC" },

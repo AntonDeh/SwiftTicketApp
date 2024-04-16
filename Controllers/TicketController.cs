@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels.Tickets;
@@ -184,17 +186,82 @@ namespace SwiftTicketApp.Controllers
             {
                 return NotFound();
             }
+            var currentStatus = ticket.TicketStatus?.Name ?? "No Status";
+            var availableStatuses = await _ticketService.GetAvailableStatusesAsync(); 
 
             var viewModel = new TicketDetailsViewModel
             {
                 TicketId = ticket.TicketId,
                 Description = ticket.Description,
+                CurrentStatus = ticket.TicketStatus?.Name ?? "No Status",
                 Status = ticket.TicketStatus?.Name ?? "No Status",
-                CreatedAt = ticket.CreatedAt
+                CreatedAt = ticket.CreatedAt,
+                AvailableStatuses = availableStatuses,
+
             };
 
             return View(viewModel);
         }
+        // POST: /Ticket/AssignToMe
+        [HttpPost]
+        [Authorize(Roles = "Technician")]
+        public async Task<IActionResult> AssignToMe(int ticketId)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User must be logged in to assign tickets.");
+            }
+
+            var statusResult = await _ticketService.UpdateTicketStatusAsync(ticketId, userId, "Assigned");
+            if (!statusResult.Success)
+            {
+                TempData["ErrorMessage"] = statusResult.Message;
+                return RedirectToAction("Details", new { id = ticketId });
+            }
+
+            var assignResult = await _ticketService.AssignTicketToTechnicianAsync(ticketId, userId);
+            if (assignResult.Success)
+            {
+                TempData["Message"] = "Ticket assigned to you successfully!";
+                return RedirectToAction("TechnicianDashboard");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = assignResult.Message;
+            }
+
+            return RedirectToAction("TechnicianDashboard", new { id = ticketId });
+        }
+
+
+        // POST: /Ticket/UpdateStatus
+        [HttpPost]
+        [Authorize(Roles = "Admin,Technician")]
+        public async Task<IActionResult> UpdateStatus(int ticketId, string newStatus)
+        {
+            var userId = _userManager.GetUserId(User); // Get the current user ID
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User must be logged in to assign tickets.");
+            }
+
+            var result = await _ticketService.UpdateTicketStatusAsync(ticketId, userId, newStatus); // Update ticket status
+
+            if (result.Success)
+            {
+                TempData["Message"] = "Ticket status updated successfully!";
+                return RedirectToAction("TechnicianDashboard");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.Message;
+            }
+
+            return RedirectToAction("Details", new { id = ticketId });
+        }
+
         // GET: /Ticket/ClosedTickets
         [HttpGet]
         public async Task<IActionResult> ClosedTickets()
@@ -269,6 +336,7 @@ namespace SwiftTicketApp.Controllers
             // Returning the updated model to the view
             return View("TechnicianDashboard", model);
         }
+        
 
 
 
@@ -277,7 +345,7 @@ namespace SwiftTicketApp.Controllers
         private List<SelectListItem> GetAvailableSites() => new List<SelectListItem>();
         private List<SelectListItem> GetAvailableCategories() => new List<SelectListItem>();
         private List<SelectListItem> GetAvailableUrgencies() => new List<SelectListItem>();
-
+        private List<SelectListItem> GetAvailableStatusesAsync() => new List<SelectListItem>();
 
     }
 

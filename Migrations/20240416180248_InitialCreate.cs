@@ -228,11 +228,18 @@ namespace SwiftTicketApp.Migrations
                     SubCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Urgency = table.Column<int>(type: "int", nullable: false),
                     MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LabLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LabLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TechnicianId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_TechnicianId",
+                        column: x => x.TechnicianId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tickets_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -315,41 +322,15 @@ namespace SwiftTicketApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TicketAssignments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
-                    TechnicianId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TicketAssignments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TicketAssignments_AspNetUsers_TechnicianId",
-                        column: x => x.TechnicianId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TicketAssignments_Tickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "Tickets",
-                        principalColumn: "TicketId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2232ef35-5438-41ba-ab69-bc1cc8b63664", null, "Admin", "ADMIN" });
+                values: new object[] { "854d57a1-5914-4212-951f-21d6b968db2e", null, "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "765bd22b-c1dc-4235-b945-f22f46c8b359", 0, "b6bbe59e-cb0b-41bf-bc71-6a3f6b9f7ac5", "User", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFFY530Cisb15r2sfjawrKbdqC8gYqMbnMkw5VIu1sTbvjPcZ+20Un/1qd6ESSgnFw==", null, false, "", false, "admin@admin.com" });
+                values: new object[] { "9d5888e2-0594-4fa5-8587-d5fb4d18aba7", 0, "e7cd6800-b970-4df0-a5eb-ade0cf1674ac", "User", "admin@admin.com", true, false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEDb2dxYi/D6JUaBJx2dXOPX7c+PVmOuzqU/UqoM+am6jjYpZOIC439UNSDF9Pm8rkQ==", null, false, "", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -397,7 +378,7 @@ namespace SwiftTicketApp.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "2232ef35-5438-41ba-ab69-bc1cc8b63664", "765bd22b-c1dc-4235-b945-f22f46c8b359" });
+                values: new object[] { "854d57a1-5914-4212-951f-21d6b968db2e", "9d5888e2-0594-4fa5-8587-d5fb4d18aba7" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -459,16 +440,6 @@ namespace SwiftTicketApp.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketAssignments_TechnicianId",
-                table: "TicketAssignments",
-                column: "TechnicianId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TicketAssignments_TicketId",
-                table: "TicketAssignments",
-                column: "TicketId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_CurrentSite",
                 table: "Tickets",
                 column: "CurrentSite");
@@ -477,6 +448,11 @@ namespace SwiftTicketApp.Migrations
                 name: "IX_Tickets_StatusId",
                 table: "Tickets",
                 column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_TechnicianId",
+                table: "Tickets",
+                column: "TechnicianId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_Urgency",
@@ -515,9 +491,6 @@ namespace SwiftTicketApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "ServiceHistories");
-
-            migrationBuilder.DropTable(
-                name: "TicketAssignments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -7,6 +7,7 @@ namespace SwiftTicketApp.Models
     public class Ticket
     {
         public int TicketId { get; set; } // Unique identifier for the ticket
+
         public string Title { get; set; } = string.Empty; // The title of the ticket
         public string Description { get; set; } = string.Empty; // Detailed description of the ticket issue
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // The date and time the ticket was created
@@ -36,20 +37,18 @@ namespace SwiftTicketApp.Models
 
         public string MobileNumber { get; set; } = string.Empty;
         public string LabLocation { get; set; } = string.Empty;
-        
 
-        
+        // Foreign key for Technician
+        public string? TechnicianId { get; set; } = string.Empty;
+        public virtual User? Technician { get; set; }
+
         public ICollection<Comment> Comments { get; set; } // Collection of comments associated with the ticket
         public ICollection<ServiceHistory> ServiceHistories { get; set; } // Collection of service history records for the ticket
-        
-        // Adding a navigation property for TicketAssignments
-        public ICollection<TicketAssignment> TicketAssignments { get; set; }
 
         public Ticket()
         {
             Comments = new HashSet<Comment>();
             ServiceHistories = new HashSet<ServiceHistory>();
-            TicketAssignments = new HashSet<TicketAssignment>();
         }
     }
 }

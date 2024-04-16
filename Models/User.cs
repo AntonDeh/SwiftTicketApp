@@ -8,7 +8,6 @@ namespace SwiftTicketApp.Models
         public ICollection<Ticket> TicketsCreated { get; set; } // Collection of tickets created by the user
         public ICollection<Comment> Comments { get; set; } // Collection of comments made by the user
         public ICollection<ServiceHistory> ServiceHistories { get; set; } // Collection of service history records associated with the user
-
         public User()
         {
             TicketsCreated = new HashSet<Ticket>();

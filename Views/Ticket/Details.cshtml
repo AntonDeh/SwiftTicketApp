@@ -12,14 +12,35 @@
                 <dd class="col-sm-8">@Model.Description</dd>
 
                 <dt class="col-sm-4">Status:</dt>
-                <dd class="col-sm-8">@Model.Status</dd>
+                <dd class="col-sm-8">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+                    {
+                        <form asp-action="UpdateStatus" asp-controller="Ticket" method="post">
+                            <input type="hidden" name="ticketId" value="@Model.TicketId" />
+                            <select name="newStatus" asp-items="@Model.AvailableStatuses" class="form-control"></select>
+                            <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+                        </form>
+                    }
+                    else
+                    {
+                        @Model.Status
+                    }
+                </dd>
+
+                <dt class="col-sm-4">Assigned Technician:</dt>
+                <dd class="col-sm-8">@Model.AssignedTechnician</dd>
 
                 <dt class="col-sm-4">Created At:</dt>
                 <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
-
-
             </dl>
 
+            @if (User.IsInRole("Technician") && Model.Status != "Assigned")
+            {
+                <form asp-action="AssignToMe" asp-controller="Ticket" method="post" class="text-center">
+                    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+                    <button type="submit" class="btn btn-warning">Assign to Me</button>
+                </form>
+            }
             <div class="text-center mt-4">
                 <a href="@Url.Action("MyTickets", "Ticket")" class="btn btn-secondary">Back to My Tickets</a>
             </div>

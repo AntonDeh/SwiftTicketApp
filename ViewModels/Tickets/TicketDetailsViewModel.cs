@@ -1,4 +1,6 @@
-﻿namespace SwiftTicketApp.ViewModels.Tickets
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace SwiftTicketApp.ViewModels.Tickets
 {
     public class TicketDetailsViewModel
     {
@@ -6,5 +8,8 @@
         public string Description { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public string CurrentStatus { get; set; } = string.Empty;
+        public List<SelectListItem> AvailableStatuses { get; set; } = new List<SelectListItem>();
+        public string AssignedTechnician { get; set; } = string.Empty;
     }
 }
