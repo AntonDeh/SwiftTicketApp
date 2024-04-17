@@ -270,9 +270,8 @@ namespace SwiftTicketApp.Services
 
             if (!string.IsNullOrWhiteSpace(technician))
             {
-                
-                query = query.Include(t => t.User) 
-                             .Where(t => t.User != null && t.User.UserName == technician);
+
+                query = query.Where(t => t.TechnicianId != null && t.TechnicianId == technician);
             }
 
             if (!string.IsNullOrWhiteSpace(urgencyLevel))
