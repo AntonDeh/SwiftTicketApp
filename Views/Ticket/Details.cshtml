@@ -30,6 +30,21 @@
                 <dt class="col-sm-4">Assigned Technician:</dt>
                 <dd class="col-sm-8">@Model.AssignedTechnician</dd>
 
+                <dt class="col-sm-4">Select Technician:</dt>
+                <dd class="col-sm-8">
+                    <form asp-action="AssignTechnician" method="post">
+                        <input type="hidden" name="ticketId" value="@Model.TicketId" />
+                        <select class="form-control" name="selectedTechnicianId">
+                            <option value="">Select Technician</option>
+                            @foreach (var technician in Model.AvailableTechnicians)
+                            {
+                                <option value="@technician.Value">@technician.Text</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-primary mt-2">Assign Technician</button>
+                    </form>
+                </dd>
+
                 <dt class="col-sm-4">Created At:</dt>
                 <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
             </dl>
@@ -44,7 +59,8 @@
             <div class="text-center mt-4">
                 <a href="@Url.Action("MyTickets", "Ticket")" class="btn btn-secondary">Back to My Tickets</a>
             </div>
-            <!-- Form for adding a comment -->
+
+            <!-- Form for adding comment -->
             <form asp-action="AddComment" method="post" class="mt-5">
                 <input type="hidden" name="ticketId" value="@Model.TicketId" />
                 <div class="form-group">

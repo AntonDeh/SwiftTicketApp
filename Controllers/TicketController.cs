@@ -188,7 +188,9 @@ namespace SwiftTicketApp.Controllers
                 return NotFound();
             }
             var availableStatuses = await _ticketService.GetAvailableStatusesAsync();
+            var technicians = await _ticketService.GetAvailableTechniciansAsync();
             var ticketComments = await _ticketService.GetCommentsByTicketIdAsync(id);
+            var assignedTechnician = ticket.Technician;
 
             var viewModel = new TicketDetailsViewModel
             {
@@ -198,12 +200,20 @@ namespace SwiftTicketApp.Controllers
                 Status = ticket.TicketStatus?.Name ?? "No Status",
                 CreatedAt = ticket.CreatedAt,
                 AvailableStatuses = availableStatuses,
-                Comments = ticketComments
+                Comments = ticketComments,
+                AvailableTechnicians = technicians,
+                AssignedTechnician = assignedTechnician?.UserName ?? "Unassigned"
             };
 
             return View(viewModel);
         }
-
+        // POST: /Ticket/AssignTechnician
+        [HttpPost]
+        public async Task<IActionResult> AssignTechnician(int ticketId, string selectedTechnicianId)
+        {
+            await _ticketService.AssignTicketToTechnicianAsync(ticketId, selectedTechnicianId);
+            return RedirectToAction("Details", new { id = ticketId });
+        }
         // POST: /Ticket/AssignToMe
         [HttpPost]
         [Authorize(Roles = "Technician")]
