@@ -383,6 +383,70 @@ namespace SwiftTicketApp.Services
 
             return serviceResponse;
         }
+        public async Task<ServiceResponse> AddCommentAsync(int ticketId, string userId, string content)
+        {
+            var serviceResponse = new ServiceResponse();
+
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Ticket not found.";
+                return serviceResponse;
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "User not found.";
+                return serviceResponse;
+            }
+
+            var comment = new Comment
+            {
+                TicketId = ticketId,
+                UserId = userId,
+                Content = content,
+                CreatedAt = DateTime.UtcNow,
+                User = user,
+                Ticket = ticket
+            };
+
+            _context.Comments.Add(comment);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Comment added successfully.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Error adding comment: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+        public async Task<List<CommentViewModel>> GetCommentsByTicketIdAsync(int ticketId)
+        {
+            var comments = await _context.Comments
+                .Where(c => c.TicketId == ticketId)
+                .Include(c => c.User)
+                .OrderByDescending(c => c.CreatedAt)
+                .Select(c => new CommentViewModel
+                {
+                    Content = c.Content,
+                    UserName = (c.User != null ? c.User.UserName : null)!,
+                    CreatedAt = c.CreatedAt
+                })
+                .ToListAsync();
+
+            return comments;
+        }
+
+
     }
     public class ServiceResponse
     {

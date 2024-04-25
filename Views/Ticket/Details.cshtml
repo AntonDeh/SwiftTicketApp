@@ -44,6 +44,32 @@
             <div class="text-center mt-4">
                 <a href="@Url.Action("MyTickets", "Ticket")" class="btn btn-secondary">Back to My Tickets</a>
             </div>
+            <!-- Form for adding a comment -->
+            <form asp-action="AddComment" method="post" class="mt-5">
+                <input type="hidden" name="ticketId" value="@Model.TicketId" />
+                <div class="form-group">
+                    <label for="comment">Add Comment:</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            <!-- List of comments -->
+            <h4 class="mt-5">Comments:</h4>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="border p-3 mb-3">
+                    <p>@comment.Content</p>
+                    <p>
+                        <small>
+                            @if (comment.User != null)
+                            {
+                                @:Posted by: @comment.User.UserName on @comment.CreatedAt
+                            }
+                        </small>
+                    </p>
+                </div>
+            }
         </div>
     </div>
 </div>

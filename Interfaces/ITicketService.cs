@@ -20,10 +20,12 @@ namespace SwiftTicketApp.Interfaces
         Task<IEnumerable<Ticket>> GetFilteredTicketsAsync(string status, string submitter, string subCategory, string technician, string urgencyLevel, string site);
         Task<ServiceResponse> UpdateTicketStatusAsync(int ticketId, string userId, string newStatus);
         Task<ServiceResponse> AssignTicketToTechnicianAsync(int ticketId, string userId);
-
+        Task<ServiceResponse> AddCommentAsync(int ticketId, string userId, string content);
         Task<List<SelectListItem>> GetAvailableStatusesAsync();
         Task<List<SelectListItem>> GetAvailableSubmittersAsync();
         Task<List<SelectListItem>> GetAvailableTechniciansAsync();
         Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync();
+        Task<List<CommentViewModel>> GetCommentsByTicketIdAsync(int ticketId);
+        
     }
 }

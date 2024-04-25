@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels.Tickets;
+using System.Xml.Linq;
 
 namespace SwiftTicketApp.Controllers
 {
@@ -186,8 +187,8 @@ namespace SwiftTicketApp.Controllers
             {
                 return NotFound();
             }
-            var currentStatus = ticket.TicketStatus?.Name ?? "No Status";
-            var availableStatuses = await _ticketService.GetAvailableStatusesAsync(); 
+            var availableStatuses = await _ticketService.GetAvailableStatusesAsync();
+            var ticketComments = await _ticketService.GetCommentsByTicketIdAsync(id);
 
             var viewModel = new TicketDetailsViewModel
             {
@@ -197,11 +198,12 @@ namespace SwiftTicketApp.Controllers
                 Status = ticket.TicketStatus?.Name ?? "No Status",
                 CreatedAt = ticket.CreatedAt,
                 AvailableStatuses = availableStatuses,
-
+                Comments = ticketComments
             };
 
             return View(viewModel);
         }
+
         // POST: /Ticket/AssignToMe
         [HttpPost]
         [Authorize(Roles = "Technician")]
@@ -336,7 +338,53 @@ namespace SwiftTicketApp.Controllers
             // Returning the updated model to the view
             return View("TechnicianDashboard", model);
         }
-        
+        // POST: /Ticket/AddComment
+        public async Task<IActionResult> AddComment(int ticketId, string comment)
+        {
+            // Get the current user ID
+            var userId = _userManager.GetUserId(User);
+
+            // Check if the userId is not null
+            if (userId != null)
+            {
+                // Call the AddCommentAsync method from the TicketService
+                var serviceResponse = await _ticketService.AddCommentAsync(ticketId, userId, comment);
+
+                // Check if the operation was successful
+                if (serviceResponse.Success)
+                {
+                    // If the operation was successful, redirect the user to the ticket details page
+                    return RedirectToAction("Details", "Ticket", new { id = ticketId });
+                }
+                else
+                {
+                    // If there was an error adding the comment, display the error message
+                    if (serviceResponse.Message != null)
+                    {
+                        ModelState.AddModelError(string.Empty, serviceResponse.Message);
+                    }
+                    else
+                    {
+                        // If the error message is null, add a generic error message
+                        ModelState.AddModelError(string.Empty, "An error occurred while adding the comment.");
+                    }
+                    return View(); // or return the user to the same page with the form
+                }
+            }
+            else
+            {
+                // Handle the case when userId is null
+                // This might occur if the user is not authenticated
+                // You can redirect the user to the login page or handle it in another way
+                return RedirectToAction("Login", "Account"); // Redirect to the login page
+            }
+        }
+
+
+
+
+
+
 
 
 
