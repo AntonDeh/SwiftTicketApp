@@ -8,7 +8,7 @@
         <form asp-action="ClosedTickets" method="get" class="mb-3">
             <div class="form-group">
                 <label for="userId">Filter by User:</label>
-                <select asp-for="SelectedUserId" asp-items="Model.Users" class="form-control">
+                <select id="userId" name="userId" class="form-control" asp-items="Model.Users">
                     <option value="">All Users</option>
                 </select>
             </div>

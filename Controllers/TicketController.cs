@@ -273,27 +273,7 @@ namespace SwiftTicketApp.Controllers
 
             return RedirectToAction("Details", new { id = ticketId });
         }
-        /*
-        // GET: /Ticket/ClosedTickets
-        [HttpGet]
-        public async Task<IActionResult> ClosedTickets()
-        {
-            var userId = _userManager.GetUserId(User);
-            if (userId == null)
-            {
-                TempData["ErrorMessage"] = "You must be logged in to access this page.";
-                return RedirectToAction("Login", "Account");
-            }
 
-            var closedTickets = await _ticketService.GetClosedTicketsByUserIdAsync(userId);
-            var viewModel = new ClosedTicketsViewModel
-            {
-                ClosedTickets = closedTickets
-            };
-
-            return View(viewModel);
-        }
-        */
         // GET: /Ticket/ClosedTickets
         [HttpGet]
         public async Task<IActionResult> ClosedTickets(string? userId = null)
@@ -305,6 +285,7 @@ namespace SwiftTicketApp.Controllers
             }
 
             IEnumerable<Ticket> closedTickets;
+
             List<SelectListItem> users = new List<SelectListItem>();
 
             // If userId is not provided, use the current user ID
@@ -328,6 +309,7 @@ namespace SwiftTicketApp.Controllers
 
                 // Assume GetUsersForDropdownAsync is a method that gets all users as select list items
                 users = await _ticketService.GetUsersForDropdownAsync();
+
             }
             else
             {

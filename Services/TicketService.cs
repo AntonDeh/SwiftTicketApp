@@ -190,7 +190,14 @@ namespace SwiftTicketApp.Services
         public async Task<IEnumerable<Ticket>> GetClosedTicketsByUserIdAsync(string userId)
         {
             int closedStatusId = _context.TicketStatuses.FirstOrDefault(s => s.Name == "Closed")?.Id ?? 0;
-            return await _context.Tickets
+            var query = _context.Tickets.AsQueryable();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(t => t.UserId == userId);
+            }
+
+            return await query
                 .Where(t => t.UserId == userId && t.StatusId == closedStatusId)
                 .Include(t => t.User)
                 .Include(t => t.TicketStatus)
