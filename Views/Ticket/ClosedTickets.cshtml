@@ -3,12 +3,27 @@
 <div class="container mt-5">
     <h2 class="text-center">Closed Ticket History</h2>
 
+    @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+    {
+        <form asp-action="ClosedTickets" method="get" class="mb-3">
+            <div class="form-group">
+                <label for="userId">Filter by User:</label>
+                <select asp-for="SelectedUserId" asp-items="Model.Users" class="form-control">
+                    <option value="">All Users</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+
+    }
+
     @if (Model.ClosedTickets.Any())
     {
         <table class="table table-bordered table-striped mt-4">
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
+                    <th>User</th>
                     <th>Description</th>
                     <th>Status</th>
                     <th>Creation Date</th>
@@ -19,6 +34,7 @@
                 {
                     <tr>
                         <td>@ticket.TicketId</td>
+                        <td>@(ticket.User?.UserName ?? "N/A")</td>
                         <td>@ticket.Description</td>
                         <td>@(ticket.TicketStatus?.Name ?? "No Status")</td>
                         <td>@ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
@@ -30,7 +46,7 @@
     else
     {
         <div class="alert alert-info" role="alert">
-            There are no closed tickets.
+            There are no closed tickets to display.
         </div>
     }
 </div>

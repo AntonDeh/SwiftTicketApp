@@ -273,7 +273,7 @@ namespace SwiftTicketApp.Controllers
 
             return RedirectToAction("Details", new { id = ticketId });
         }
-
+        /*
         // GET: /Ticket/ClosedTickets
         [HttpGet]
         public async Task<IActionResult> ClosedTickets()
@@ -293,6 +293,60 @@ namespace SwiftTicketApp.Controllers
 
             return View(viewModel);
         }
+        */
+        // GET: /Ticket/ClosedTickets
+        [HttpGet]
+        public async Task<IActionResult> ClosedTickets(string? userId = null)
+        {
+            if (User?.Identity?.IsAuthenticated != true)
+            {
+                TempData["ErrorMessage"] = "You must be logged in to access this page.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            IEnumerable<Ticket> closedTickets;
+            List<SelectListItem> users = new List<SelectListItem>();
+
+            // If userId is not provided, use the current user ID
+            string? currentUserId = userId ?? _userManager.GetUserId(User);
+
+            if (currentUserId == null)
+            {
+                // Log the error, redirect to an error page, or handle the null case appropriately.
+                // For example:
+                TempData["ErrorMessage"] = "An error occurred while identifying the user.";
+                return RedirectToAction("Error", "Home"); // Suppose that "Error" is an action for error handling.
+            }
+
+            if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+            {
+                // If the user's role is administrator or technician, we load tickets based on userId
+                // If userId is not provided, then we download all closed tickets
+                closedTickets = string.IsNullOrEmpty(userId)
+                    ? await _ticketService.GetAllClosedTicketsAsync()
+                    : await _ticketService.GetClosedTicketsByUserIdAsync(userId);
+
+                // Assume GetUsersForDropdownAsync is a method that gets all users as select list items
+                users = await _ticketService.GetUsersForDropdownAsync();
+            }
+            else
+            {
+                // For a regular user, we always upload tickets based on his own ID
+                closedTickets = await _ticketService.GetClosedTicketsByUserIdAsync(currentUserId);
+            }
+
+            var viewModel = new ClosedTicketsViewModel
+            {
+                ClosedTickets = closedTickets,
+                Users = users,
+                SelectedUserId = userId ?? string.Empty
+            };
+
+            return View(viewModel);
+        }
+
+
+
         // GET: /Ticket/Dashboard
         [HttpGet]
         public async Task<IActionResult> TechnicianDashboard(
@@ -389,15 +443,6 @@ namespace SwiftTicketApp.Controllers
                 return RedirectToAction("Login", "Account"); // Redirect to the login page
             }
         }
-
-
-
-
-
-
-
-
-
 
         // Stubs for methods for obtaining data for drop-down lists
         private List<SelectListItem> GetAvailableSites() => new List<SelectListItem>();

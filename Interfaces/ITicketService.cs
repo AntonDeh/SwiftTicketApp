@@ -17,6 +17,7 @@ namespace SwiftTicketApp.Interfaces
         Task<ServiceResponse> CloseTicketAsync(int ticketId, string userId);
         Task<IEnumerable<Ticket>> SearchTicketsAsync(string searchTerm);
         Task<IEnumerable<Ticket>> GetClosedTicketsByUserIdAsync(string userId);
+        Task<IEnumerable<Ticket>> GetAllClosedTicketsAsync();
         Task<IEnumerable<Ticket>> GetFilteredTicketsAsync(string status, string submitter, string subCategory, string technician, string urgencyLevel, string site);
         Task<ServiceResponse> UpdateTicketStatusAsync(int ticketId, string userId, string newStatus);
         Task<ServiceResponse> AssignTicketToTechnicianAsync(int ticketId, string userId);
@@ -26,6 +27,8 @@ namespace SwiftTicketApp.Interfaces
         Task<List<SelectListItem>> GetAvailableTechniciansAsync();
         Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync();
         Task<List<CommentViewModel>> GetCommentsByTicketIdAsync(int ticketId);
-        
+        Task<List<SelectListItem>> GetUsersForDropdownAsync();
+
+
     }
 }

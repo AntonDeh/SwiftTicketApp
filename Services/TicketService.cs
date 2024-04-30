@@ -192,7 +192,29 @@ namespace SwiftTicketApp.Services
             int closedStatusId = _context.TicketStatuses.FirstOrDefault(s => s.Name == "Closed")?.Id ?? 0;
             return await _context.Tickets
                 .Where(t => t.UserId == userId && t.StatusId == closedStatusId)
+                .Include(t => t.User)
                 .Include(t => t.TicketStatus)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Ticket>> GetAllClosedTicketsAsync()
+        {
+            // Get the 'Closed' status ID
+            var closedStatusId = await _context.TicketStatuses
+                .Where(s => s.Name == "Closed")
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
+
+            if (closedStatusId == 0)
+            {
+                // If 'Closed' status is not found, return an empty list
+                return Enumerable.Empty<Ticket>();
+            }
+
+            // We return all tickets with the 'Closed' status
+            return await _context.Tickets
+                .Where(t => t.StatusId == closedStatusId)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.User)
                 .ToListAsync();
         }
         public async Task<List<SelectListItem>> GetAvailableStatusesAsync()
@@ -445,7 +467,17 @@ namespace SwiftTicketApp.Services
 
             return comments;
         }
-
+        public async Task<List<SelectListItem>> GetUsersForDropdownAsync()
+        {
+            return await _context.Users
+                .OrderBy(u => u.UserName) // Optional, for alphabetical ordering.
+                .Select(u => new SelectListItem
+                {
+                    Value = u.Id,
+                    Text = u.UserName
+                })
+                .ToListAsync();
+        }
     }
     public class ServiceResponse
     {
