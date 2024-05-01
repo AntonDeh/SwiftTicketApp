@@ -112,6 +112,7 @@ namespace SwiftTicketApp.Services
         {
             return await _context.Tickets
                 .Include(t => t.TicketStatus)
+                .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.TicketId == ticketId);
         }
 

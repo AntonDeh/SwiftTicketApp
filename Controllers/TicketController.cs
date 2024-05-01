@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.Models;
+using SwiftTicketApp.Services;
 using SwiftTicketApp.ViewModels.Tickets;
 using System.Xml.Linq;
 
@@ -15,11 +17,16 @@ namespace SwiftTicketApp.Controllers
         // ticket processing service
         private readonly ITicketService _ticketService;
         private readonly UserManager<User> _userManager;
+        private readonly MailgunEmailService _emailService;
+        private readonly ILogger<TicketController> _logger;
 
-        public TicketController(ITicketService ticketService, UserManager<User> userManager)
+
+        public TicketController(ITicketService ticketService, UserManager<User> userManager, MailgunEmailService emailService, ILogger<TicketController> logger)
         {
             _ticketService = ticketService;
             _userManager = userManager;
+            _emailService = emailService;
+            _logger = logger ?? NullLogger<TicketController>.Instance;
         }
         // GET : /Ticket/CreateRequestAsync
         [HttpGet]
@@ -399,6 +406,20 @@ namespace SwiftTicketApp.Controllers
                 // Check if the operation was successful
                 if (serviceResponse.Success)
                 {
+                    // After adding a comment we send an email
+                    var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
+                    if (ticket != null && ticket.User != null && !string.IsNullOrWhiteSpace(ticket.User.Email))
+                    {
+
+                        var emailSubject = "New Comment Added";
+                        var emailContent = $"A new comment was added to your ticket: {comment}";
+                        // Sending an email
+                        await _emailService.SendEmailAsync(ticket.User.Email, emailSubject, emailContent);
+                    }
+                    else
+                     {
+                        _logger.LogWarning("Email not sent: no email address available for user ID {UserId}", ticket?.UserId);
+                    }
                     // If the operation was successful, redirect the user to the ticket details page
                     return RedirectToAction("Details", "Ticket", new { id = ticketId });
                 }
