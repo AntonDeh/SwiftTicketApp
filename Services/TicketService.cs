@@ -152,6 +152,8 @@ namespace SwiftTicketApp.Services
 
             // We look for the "Closed" status in the status table
             var closedStatus = await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name == "Closed");
+            ticket.ClosedAt = DateTime.UtcNow;
+
             if (closedStatus == null)
             {
                 serviceResponse.Success = false;
@@ -486,6 +488,13 @@ namespace SwiftTicketApp.Services
                 })
                 .ToListAsync();
         }
+        public async Task<int> GetClosedTicketsCountAsync(DateTime startDate, DateTime endDate)
+        {
+            return await _context.Tickets
+                .Where(t => t.ClosedAt >= startDate && t.ClosedAt <= endDate && t.TicketStatus != null && t.TicketStatus.Name == "Closed")
+                .CountAsync();
+        }
+
     }
     public class ServiceResponse
     {

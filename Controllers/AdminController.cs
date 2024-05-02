@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SwiftTicketApp.Interfaces;
 using SwiftTicketApp.Models;
 using SwiftTicketApp.ViewModels.Admin;
 
@@ -15,11 +16,13 @@ namespace SwiftTicketApp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ITicketService _ticketService;
 
-        public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ITicketService ticketService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _ticketService = ticketService;
         }
         // Method to display a list of users
         public IActionResult UsersList()
@@ -252,5 +255,28 @@ namespace SwiftTicketApp.Controllers
             // If we get here, something was wrong with the model
             return View(model);
         }
+        // GET: Admin/Reports
+        [HttpGet("Admin/Reports")]
+        public IActionResult Reports()
+        {
+            var viewModel = new ReportViewModel
+            {
+                StartDate = DateTime.Today.AddMonths(-1),
+                EndDate = DateTime.Today
+            };
+            return View(viewModel);
+        }
+        // POST: Admin/Reports
+        [HttpPost("Admin/Reports")]
+        public async Task<IActionResult> Reports(ReportViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.ClosedTicketsCount = await _ticketService.GetClosedTicketsCountAsync(model.StartDate, model.EndDate);
+                return View(model);
+            }
+            return View(model);
+        }
+
     }
 }

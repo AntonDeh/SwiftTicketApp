@@ -28,7 +28,6 @@ namespace SwiftTicketApp.Interfaces
         Task<List<SelectListItem>> GetTicketsWithTechnicianNameAsync();
         Task<List<CommentViewModel>> GetCommentsByTicketIdAsync(int ticketId);
         Task<List<SelectListItem>> GetUsersForDropdownAsync();
-
-
+        Task<int> GetClosedTicketsCountAsync(DateTime startDate, DateTime endDate);
     }
 }

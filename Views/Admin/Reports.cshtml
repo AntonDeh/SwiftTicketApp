@@ -1,0 +1,22 @@
+﻿@model ReportViewModel
+
+<h2>Operational Report</h2>
+
+<form asp-action="Reports" method="post">
+    <div class="form-group">
+        <label for="StartDate">Start Date:</label>
+        <input type="date" asp-for="StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="EndDate">End Date:</label>
+        <input type="date" asp-for="EndDate" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>
+
+@if (Model.ClosedTicketsCount > 0)
+{
+    <div class="alert alert-info">
+        <strong>Report:</strong> Closed tickets from @Model.StartDate.ToShortDateString() to @Model.EndDate.ToShortDateString() is @Model.ClosedTicketsCount.
+    </div>
+}

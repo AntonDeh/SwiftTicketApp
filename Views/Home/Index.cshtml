@@ -24,7 +24,18 @@
                     </div>
                 </div>
             </div>
-
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Operative Reports</h5>
+                            <p class="card-text">Generate and view reports for specified periods.</p>
+                            <a href="@Url.Action("Reports", "Admin")" class="btn btn-info">Generate Reports</a>
+                        </div>
+                    </div>
+                </div>
+            }
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
