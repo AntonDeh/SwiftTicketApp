@@ -4,9 +4,10 @@
       "type": "secrets.user"
     },
     "mssql1": {
-      "serviceConnectorResourceId": "",
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ServiceLinker/locations/westus/connectors/ConnectionStringsSwiftTicketConnectionSt_0D65CB0CB3",
       "secretStore": "LocalSecretsFile",
-      "type": "mssql.local",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/aspnet53bc/databases/aspnet",
+      "type": "mssql.azure",
       "connectionId": "ConnectionStrings:SwiftTicketConnectionString",
       "dynamicId": null
     }

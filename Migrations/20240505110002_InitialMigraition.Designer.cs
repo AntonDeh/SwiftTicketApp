@@ -12,8 +12,8 @@ using SwiftTicketApp.Data;
 namespace SwiftTicketApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240416180248_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240505110002_InitialMigraition")]
+    partial class InitialMigraition
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "854d57a1-5914-4212-951f-21d6b968db2e",
+                            Id = "52d825f3-1844-456d-94bf-6ac9f3b82eed",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -225,8 +225,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "9d5888e2-0594-4fa5-8587-d5fb4d18aba7",
-                            RoleId = "854d57a1-5914-4212-951f-21d6b968db2e"
+                            UserId = "540b57ef-f9ca-40ce-862d-f45fb80e9e55",
+                            RoleId = "52d825f3-1844-456d-94bf-6ac9f3b82eed"
                         });
                 });
 
@@ -546,15 +546,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9d5888e2-0594-4fa5-8587-d5fb4d18aba7",
+                            Id = "540b57ef-f9ca-40ce-862d-f45fb80e9e55",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e7cd6800-b970-4df0-a5eb-ade0cf1674ac",
+                            ConcurrencyStamp = "d5cb0466-b15c-4b5e-90bf-4e0f888a3a08",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDb2dxYi/D6JUaBJx2dXOPX7c+PVmOuzqU/UqoM+am6jjYpZOIC439UNSDF9Pm8rkQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDSzeRAMOLmSiEJ/XYLZA3gGVRCkQlNVx7XoNSCnmZ+IrFfUy8fB0c3eDfMCELXxmw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

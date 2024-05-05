@@ -51,7 +51,7 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "603e5792-a9c8-43ac-9971-2404dc2955cc",
+                            Id = "52d825f3-1844-456d-94bf-6ac9f3b82eed",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -222,8 +222,8 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "06e31909-838a-405d-90ff-3281390e3420",
-                            RoleId = "603e5792-a9c8-43ac-9971-2404dc2955cc"
+                            UserId = "540b57ef-f9ca-40ce-862d-f45fb80e9e55",
+                            RoleId = "52d825f3-1844-456d-94bf-6ac9f3b82eed"
                         });
                 });
 
@@ -543,15 +543,15 @@ namespace SwiftTicketApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "06e31909-838a-405d-90ff-3281390e3420",
+                            Id = "540b57ef-f9ca-40ce-862d-f45fb80e9e55",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "79b23ec2-1758-49e9-a569-e2b5707a830b",
+                            ConcurrencyStamp = "d5cb0466-b15c-4b5e-90bf-4e0f888a3a08",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEECf9uqWDkQ22ZxuHdYJy2BDBIAWKv9ZCjFeiREKsRHDbMhw8VhWJkTVEMXqPDj7ag==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDSzeRAMOLmSiEJ/XYLZA3gGVRCkQlNVx7XoNSCnmZ+IrFfUy8fB0c3eDfMCELXxmw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
